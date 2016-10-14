@@ -15,3 +15,10 @@
 
 # Ignore Byebug command history file.
 .byebug_history
+
+# DSStore
+**.DS_Store
+.DS_Store
+
+# Ignore RubyMine IDE files
+/.idea
