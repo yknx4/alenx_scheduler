@@ -54,6 +54,8 @@ group :development, :test do
   gem 'rubocop', require: false
   gem 'sql_queries_count', '= 0.0.1'
   gem 'rspec-rails', '~> 3.5'
+  gem 'factory_girl_rails', '~> 4.7.0'
+  gem 'faker', '~> 1.6.6'
 end
 
 group :development do
