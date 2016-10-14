@@ -53,6 +53,7 @@ group :development, :test do
   gem 'active_record_query_trace'
   gem 'rubocop', require: false
   gem 'sql_queries_count', '= 0.0.1'
+  gem 'rspec-rails', '~> 3.5'
 end
 
 group :development do
