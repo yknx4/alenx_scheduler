@@ -16,6 +16,7 @@ class User < ApplicationRecord
          :confirmable
 
   belongs_to :tenant
+  validates_presence_of :tenant
 
   def assign_inital_role
     self.add_role(role || :user) if self.roles.blank?
