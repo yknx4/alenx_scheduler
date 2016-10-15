@@ -1,5 +1,7 @@
 class User < ApplicationRecord
 
+  default_scope { with_role :user }
+
   # After Create
   after_create :assign_default_role
 
