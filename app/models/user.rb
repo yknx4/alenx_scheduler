@@ -1,11 +1,9 @@
 class User < ApplicationRecord
   attr_accessor :role
 
-  default_scope { distinct }
-
-  scope :users, -> { with_role :user}
-  scope :admins, -> { with_role :admin}
-  scope :providers, -> { with_role :provider}
+  scope :users, -> { distinct.with_role :user}
+  scope :admins, -> { distinct.with_role :admin}
+  scope :providers, -> { distinct.with_role :provider}
 
   # After Create
   after_create :assign_inital_role
