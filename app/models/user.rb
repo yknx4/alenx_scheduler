@@ -1,9 +1,14 @@
 class User < ApplicationRecord
+  attr_accessor :role
 
-  default_scope { distinct.with_role :user }
+  default_scope { distinct }
+
+  scope :users, -> { with_role :user}
+  scope :admins, -> { with_role :admin}
+  scope :providers, -> { with_role :provider}
 
   # After Create
-  after_create :assign_default_role
+  after_create :assign_inital_role
 
   rolify
   # Include default devise modules. Others available are:
@@ -12,8 +17,11 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable
 
+  def assign_inital_role
+    self.add_role(role || :user) if self.roles.blank?
+  end
 
-  def assign_default_role
-    self.add_role(:user) if self.roles.blank?
+  def role
+    [:user, :provider, :admin].include?(@role) ? @role : nil
   end
 end
