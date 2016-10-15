@@ -1,5 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe Tenant, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe '#subdomain' do
+    it 'should be invalid without subdomain' do
+      tenant = create(:tenant)
+      tenant.subdomain = nil
+      expect(tenant.valid?).to be_falsey
+    end
+  end
 end

@@ -1,5 +1,5 @@
 FactoryGirl.define do
   factory :tenant do
-    subdomain "MyString"
+    subdomain {Faker::Internet.domain_word}
   end
 end
