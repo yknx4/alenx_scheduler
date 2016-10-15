@@ -17,6 +17,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable
 
+  belongs_to :tenant
+
   def assign_inital_role
     self.add_role(role || :user) if self.roles.blank?
   end
