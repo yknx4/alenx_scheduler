@@ -7,7 +7,7 @@ class User < ApplicationRecord
 
   # After Create
   after_create :assign_inital_role
-  after_validation :create_tenant_if_is_valid, only: [:create]
+  after_validation :setup_tenant, only: [:create], if: :require_setup_tenant?
 
   rolify
 
@@ -20,8 +20,8 @@ class User < ApplicationRecord
          :confirmable
 
   belongs_to :tenant
-  validates_presence_of :tenant, unless: :new_record?
-  validates_presence_of :subdomain, if: :new_record?
+  validates_presence_of :tenant, if: :tenant_required?
+  validates_presence_of :subdomain, if: :subdomain_required?
   validates_presence_of :role, if: :new_record?
 
   def assign_inital_role
@@ -29,18 +29,30 @@ class User < ApplicationRecord
     self.add_role(role || :user) if self.roles.blank?
   end
 
-  def create_tenant_if_is_valid
-    return unless errors.empty?
+  def setup_tenant
     if role == 'admin'
       self.tenant = Tenant.create! subdomain: self.subdomain
     else
-      self.tenant = Tenant.find subdomain: self.subdomain
+      self.tenant = Tenant.find_by subdomain: self.subdomain
     end
-
   end
 
   alias_method :setted_role, :role
   def role
     %w(user provider admin).include?(setted_role) ? setted_role : nil
   end
+
+  private
+  def subdomain_required?
+    new_record? and tenant.blank?
+  end
+
+  def tenant_required?
+    new_record? and subdomain.blank?
+  end
+
+  def require_setup_tenant?
+    self.tenant.blank? or errors.present?
+  end
+
 end

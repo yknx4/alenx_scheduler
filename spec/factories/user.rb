@@ -3,16 +3,16 @@ FactoryGirl.define do
     tenant
     username              { Faker::Internet.user_name }
     email                 { Faker::Internet.email }
-    password              "password"
-    password_confirmation "password"
-    role                  :user
+    password              'password'
+    password_confirmation 'password'
+    role                  'user'
   end
 
   factory :admin, parent: :user do
-    role  :admin
+    role  'admin'
   end
 
   factory :provider, parent: :user do
-    role :provider
+    role 'provider'
   end
 end
