@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  attr_accessor :role
+  attr_accessor :role, :subdomain
 
   scope :users, -> { distinct.with_role :user}
   scope :admins, -> { distinct.with_role :admin}
@@ -7,6 +7,7 @@ class User < ApplicationRecord
 
   # After Create
   after_create :assign_inital_role
+  after_validation :create_tenant_if_is_valid, only: [:create]
 
   rolify
 
@@ -19,13 +20,21 @@ class User < ApplicationRecord
          :confirmable
 
   belongs_to :tenant
-  validates_presence_of :tenant
+  validates_presence_of :tenant, unless: :new_record?
+  validates_presence_of :subdomain, if: :new_record?
+  validates_presence_of :role, if: :new_record?
 
   def assign_inital_role
+    puts setted_role
     self.add_role(role || :user) if self.roles.blank?
   end
 
+  def create_tenant_if_is_valid
+    self.tenant = Tenant.create! subdomain: self.subdomain if errors.empty?
+  end
+
+  alias_method :setted_role, :role
   def role
-    [:user, :provider, :admin].include?(@role) ? @role : nil
+    %w(user provider admin).include?(setted_role) ? setted_role : nil
   end
 end
