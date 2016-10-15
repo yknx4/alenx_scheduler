@@ -30,7 +30,13 @@ class User < ApplicationRecord
   end
 
   def create_tenant_if_is_valid
-    self.tenant = Tenant.create! subdomain: self.subdomain if errors.empty?
+    return unless errors.empty?
+    if role == 'admin'
+      self.tenant = Tenant.create! subdomain: self.subdomain
+    else
+      self.tenant = Tenant.find subdomain: self.subdomain
+    end
+
   end
 
   alias_method :setted_role, :role
