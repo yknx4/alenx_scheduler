@@ -1,7 +1,7 @@
 class Provider < User
 
   def self.default_scope
-    with_role :admin
+    distinct.with_role :admin
   end
 
   def assign_default_role
