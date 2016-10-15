@@ -49,7 +49,7 @@ Apartment.configure do |config|
   #   end
   # end
   #
-  config.tenant_names = lambda { ToDo_Tenant_Or_User_Model.pluck :database }
+  config.tenant_names = lambda { User.pluck :subdomain }
 
   #
   # ==> PostgreSQL only options
