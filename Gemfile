@@ -35,6 +35,8 @@ gem 'goldiloader', '~> 0.0.10'
 
 gem 'sidekiq', '~> 4.2.2'
 
+gem 'apartment', '~> 1.2.0'
+
 # Auth - Login
 gem 'pundit', '~> 1.1.0'
 gem 'devise', '~> 4.2.0'
