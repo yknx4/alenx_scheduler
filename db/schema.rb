@@ -62,5 +62,4 @@ ActiveRecord::Schema.define(version: 20161015044610) do
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id", using: :btree
   end
 
-  add_foreign_key "users", "tenants"
 end
