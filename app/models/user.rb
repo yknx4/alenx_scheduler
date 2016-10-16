@@ -25,8 +25,7 @@ class User < ApplicationRecord
   validates_presence_of :role, if: :new_record?
 
   def assign_inital_role
-    puts setted_role
-    self.add_role(role || :user) if self.roles.blank?
+    self.add_role(role) if self.roles.blank?
   end
 
   def setup_tenant
@@ -39,7 +38,7 @@ class User < ApplicationRecord
 
   alias_method :setted_role, :role
   def role
-    %w(user provider admin).include?(setted_role) ? setted_role : nil
+    %w(user provider admin).include?(setted_role) ? setted_role : 'user'
   end
 
   private

@@ -1,6 +1,6 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   include ApplicationHelper
-  before_action :configure_sign_up_params, only: [:create], if: :without_tenant?
+  before_action :configure_sign_up_params, only: [:create]
 # before_action :configure_account_update_params, only: [:update]
 
   # GET /resource/sign_up
@@ -10,8 +10,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # POST /resource
   def create
-    return super unless without_tenant?
-    params[:user][:role] = 'admin'
+    params[:user][:role] = 'admin' if without_tenant?
     super
   end
 
@@ -41,9 +40,17 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   protected
 
+  def extra_sign_up_params
+    if without_tenant?
+      [:subdomain, :role]
+    else
+      [:subdomain]
+    end
+  end
+
   # If you have extra params to permit, append them to the sanitizer.
   def configure_sign_up_params
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:subdomain, :role])
+    devise_parameter_sanitizer.permit(:sign_up, keys: extra_sign_up_params)
   end
 
   # If you have extra params to permit, append them to the sanitizer.
