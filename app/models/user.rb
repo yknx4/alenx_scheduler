@@ -5,11 +5,9 @@ class User < ApplicationRecord
   scope :admins, -> { distinct.with_role :admin}
   scope :providers, -> { distinct.with_role :provider}
 
-  # After Create
-  after_create :assign_inital_role
+  after_initialize :assign_inital_role
   after_validation :setup_tenant, only: [:create], if: :require_setup_tenant?
-
-  after_update :update_role
+  after_commit :update_role
 
   rolify
 
@@ -33,7 +31,7 @@ class User < ApplicationRecord
   end
 
   def assign_inital_role
-    self.add_role(role) if self.roles.blank?
+    self.role ||= initial_role
   end
 
   def setup_tenant
@@ -47,18 +45,22 @@ class User < ApplicationRecord
     Rails.application.routes.default_url_options[:host] = self.subdomain + '.example.com' if Rails.env.test?
   end
 
-  alias_method :setted_role, :role
-  def role
-    %w(user provider admin).include?(setted_role) ? setted_role : current_role
+  alias_method :role_setter, :role=
+  def role=(value)
+    if %w(user provider admin).include?(value)
+      role_setter value
+    else
+      role_setter 'user'
+    end
   end
 
-  def current_role
+  def initial_role
     roles.exists? ? roles.first.name : 'user'
   end
 
   private
   def update_role
-    return if @role.blank?
+    return if has_role?(role)
     roles.destroy_all
     add_role(role)
   end

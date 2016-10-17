@@ -8,30 +8,29 @@ class UserDashboard < Administrate::BaseDashboard
   # which determines how the attribute is displayed
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
-    users_roles: Field::HasMany,
-    roles: Field::HasMany,
-    role: RoleField,
-    current_role: RoleField,
-    tenant: Field::BelongsTo,
-    id: Field::Number,
-    email: Field::String,
-    username: Field::String,
-    encrypted_password: Field::String,
-    password: Field::String,
-    remember_created_at: Field::DateTime,
-    sign_in_count: Field::Number,
-    current_sign_in_at: Field::DateTime,
-    last_sign_in_at: Field::DateTime,
-    current_sign_in_ip: Field::String.with_options(searchable: false),
-    last_sign_in_ip: Field::String.with_options(searchable: false),
-    reset_password_token: Field::String,
-    confirmation_token: Field::String,
-    confirmed_at: Field::DateTime,
-    confirmation_sent_at: Field::DateTime,
-    reset_password_sent_at: Field::DateTime,
-    unconfirmed_email: Field::String,
-    created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+      users_roles: Field::HasMany,
+      roles: Field::HasMany,
+      role: RoleField,
+      tenant: Field::BelongsTo,
+      id: Field::Number,
+      email: Field::String,
+      username: Field::String,
+      encrypted_password: Field::String,
+      password: Field::String,
+      remember_created_at: Field::DateTime,
+      sign_in_count: Field::Number,
+      current_sign_in_at: Field::DateTime,
+      last_sign_in_at: Field::DateTime,
+      current_sign_in_ip: Field::String.with_options(searchable: false),
+      last_sign_in_ip: Field::String.with_options(searchable: false),
+      reset_password_token: Field::String,
+      confirmation_token: Field::String,
+      confirmed_at: Field::DateTime,
+      confirmation_sent_at: Field::DateTime,
+      reset_password_sent_at: Field::DateTime,
+      unconfirmed_email: Field::String,
+      created_at: Field::DateTime,
+      updated_at: Field::DateTime,
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -43,7 +42,7 @@ class UserDashboard < Administrate::BaseDashboard
       :id,
       :username,
       :email,
-      :current_role
+      :role
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -52,7 +51,7 @@ class UserDashboard < Administrate::BaseDashboard
     :id,
     :email,
     :username,
-    :current_role,
+    :role,
     :reset_password_sent_at,
     :remember_created_at,
     :sign_in_count,
