@@ -21,3 +21,8 @@
 
 en:
   hello: "Hello world"
+  roles:
+    admin: "Administrator"
+    user: "User"
+    provider: "Provider"
+    invalid: "Invalid"

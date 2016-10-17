@@ -9,6 +9,8 @@ class User < ApplicationRecord
   after_create :assign_inital_role
   after_validation :setup_tenant, only: [:create], if: :require_setup_tenant?
 
+  after_update :update_role
+
   rolify
 
   has_many :users_roles
@@ -47,10 +49,21 @@ class User < ApplicationRecord
 
   alias_method :setted_role, :role
   def role
-    %w(user provider admin).include?(setted_role) ? setted_role : 'user'
+    %w(user provider admin).include?(setted_role) ? setted_role : current_role
+  end
+
+  def current_role
+    current_role = roles.first.try(:name) || 'invalid'
+    I18n.t "roles.#{current_role}"
   end
 
   private
+  def update_role
+    return if @role.blank?
+    roles.destroy_all
+    add_role(role)
+  end
+
   def subdomain_required?
     new_record? and tenant.blank?
   end
