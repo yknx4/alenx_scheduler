@@ -1,5 +1,18 @@
 module Admin
   class UsersController < Admin::ApplicationController
+    include Pundit
+    protect_from_forgery
+
+    before_action :run_authorization
+    private
+    def run_authorization
+      case action_name
+        when 'create', 'index', 'new'
+          authorize User
+        else
+          authorize requested_resource
+      end
+    end
     # To customize the behavior of this controller,
     # simply overwrite any of the RESTful actions. For example:
     #

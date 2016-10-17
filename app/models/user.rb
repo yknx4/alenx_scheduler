@@ -53,8 +53,7 @@ class User < ApplicationRecord
   end
 
   def current_role
-    current_role = roles.first.try(:name) || 'invalid'
-    I18n.t "roles.#{current_role}"
+    roles.exists? ? roles.first.name : 'user'
   end
 
   private
