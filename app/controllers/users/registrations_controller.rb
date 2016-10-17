@@ -62,16 +62,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def after_sign_up_path_for(resource)
     if without_tenant?
       sign_out resource
-      url_for(:root).gsub 'www', user_subdomain(resource)
+      new_user_session_url.gsub 'www', user_subdomain(resource)
     else
-      url_for resource
+      stored_location_for(resource) || url_for(resource) || root_path
       # super(resource)
     end
   end
 
   def after_sign_in_path_for(resource)
     # super(resource)
-    url_for resource
+    stored_location_for(resource) || url_for(resource) || root_path
   end
 
   # The path used after sign up for inactive accounts.

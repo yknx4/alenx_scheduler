@@ -52,7 +52,7 @@ RSpec.describe Users::RegistrationsController, type: :controller do
         expect(User.admins.count).to eq 1
         expect(Tenant.count).to eq 1
         expect(current_tenant).to eq Tenant.last.subdomain
-        expect(subject).to redirect_to url_for(:root).gsub('www', Tenant.last.subdomain)
+        expect(subject).to redirect_to new_user_session_url.gsub('www', Tenant.last.subdomain)
       end
     end
   end
