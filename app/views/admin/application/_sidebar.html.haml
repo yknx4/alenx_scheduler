@@ -1,5 +1,5 @@
 %ul.sidebar__list
-  - Administrate::Namespace.new(namespace).resources.each do |resource|
+  - indexable_resources.each do |resource|
     %li
       = link_to(                                                            |
           display_resource_name(resource),                                  |
