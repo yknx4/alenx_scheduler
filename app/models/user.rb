@@ -24,12 +24,18 @@ class User < ApplicationRecord
   validates_presence_of :subdomain, if: :subdomain_required?
   validates_presence_of :role, if: :new_record?
 
+  validate :tenant_is_not_taken
+
+  def admin?
+    role == 'admin'
+  end
+
   def assign_inital_role
     self.add_role(role) if self.roles.blank?
   end
 
   def setup_tenant
-    if role == 'admin'
+    if role == 'admin' and errors[:tenant].empty?
       self.tenant = Tenant.create! subdomain: self.subdomain
       Apartment::Tenant.switch!(self.subdomain)
     else
@@ -55,6 +61,17 @@ class User < ApplicationRecord
 
   def require_setup_tenant?
     self.subdomain.present? and (self.tenant.blank? or errors.present?)
+  end
+
+  def tenant_is_not_taken
+    return unless admin?
+    if subdomain_taken?
+      errors[:tenant] << 'already exists.'
+    end
+  end
+
+  def subdomain_taken?
+    Tenant.where(subdomain: subdomain).exists?
   end
 
 end
