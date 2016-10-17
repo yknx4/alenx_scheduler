@@ -37,6 +37,7 @@ RSpec.describe Users::RegistrationsController, type: :controller do
         params = default_user_params(tenant.subdomain)
         post :create, params: params
         expect(User.users.count).to eq 1
+        expect(subject).to redirect_to url_for User.last
       end
     end
 

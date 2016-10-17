@@ -35,6 +35,8 @@ class User < ApplicationRecord
     else
       self.tenant = Tenant.find_by subdomain: self.subdomain
     end
+
+    Rails.application.routes.default_url_options[:host] = self.subdomain + '.example.com' if Rails.env.test?
   end
 
   alias_method :setted_role, :role
@@ -52,7 +54,7 @@ class User < ApplicationRecord
   end
 
   def require_setup_tenant?
-    self.tenant.blank? or errors.present?
+    self.subdomain.present? and (self.tenant.blank? or errors.present?)
   end
 
 end

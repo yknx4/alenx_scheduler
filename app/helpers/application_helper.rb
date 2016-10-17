@@ -6,7 +6,8 @@ module ApplicationHelper
   def current_subdomain
     request.subdomains[0]
   end
-  def user_subdomain
-    current_user.tenant.subdomain
+  def user_subdomain(user = nil)
+    user ||= current_user
+    user.tenant.subdomain
   end
 end
