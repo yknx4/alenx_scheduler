@@ -11,7 +11,8 @@
   %header.header
     %h1#page-title.header__heading= content_for(:title)
     .header__actions
-      = link_to(                                         |
+      = link_to_if(                                      |
+          policy_for_resource(page.resource_name).new?,  |
           "New #{page.resource_name.titleize.downcase}", |
           [:new, namespace, page.resource_name],         |
           class: "button",                               |
