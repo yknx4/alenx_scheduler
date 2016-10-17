@@ -4,15 +4,15 @@
 #
 # require 'apartment/elevators/generic'
 # require 'apartment/elevators/domain'
-require 'apartment/elevators/subdomain'
-# require 'apartment/elevators/first_subdomain'
+# require 'apartment/elevators/subdomain'
+require 'apartment/elevators/first_subdomain'
 
 #
 # Apartment Configuration
 #
 Apartment.configure do |config|
 
-  Apartment::Elevators::Subdomain.excluded_subdomains = ['www']
+  Apartment::Elevators::FirstSubdomain.excluded_subdomains = ['www']
 
   # Add any models that you do not want to be multi-tenanted, but remain in the global (public) namespace.
   # A typical example would be a Customer or Tenant model that stores each Tenant's information.
@@ -90,5 +90,5 @@ end
 # }
 
 # Rails.application.config.middleware.use 'Apartment::Elevators::Domain'
-Rails.application.config.middleware.use 'Apartment::Elevators::Subdomain'
-# Rails.application.config.middleware.use 'Apartment::Elevators::FirstSubdomain'
+# Rails.application.config.middleware.use Apartment::Elevators::Subdomain
+Rails.application.config.middleware.use Apartment::Elevators::FirstSubdomain

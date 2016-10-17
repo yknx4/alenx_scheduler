@@ -1,4 +1,5 @@
 require 'rails_helper'
+include Rails.application.routes.url_helpers
 
 def default_user_params(subdomain = nil)
   {
@@ -16,6 +17,10 @@ def default_admin_params
   default_user_params(Faker::Internet.domain_word)
 end
 
+def current_tenant
+  Apartment::Tenant.current
+end
+
 RSpec.describe Users::RegistrationsController, type: :controller do
   describe '#create' do
     before do
@@ -30,7 +35,7 @@ RSpec.describe Users::RegistrationsController, type: :controller do
 
       it 'should create a user' do
         params = default_user_params(tenant.subdomain)
-        post :create, params
+        post :create, params: params
         expect(User.users.count).to eq 1
       end
     end
@@ -42,9 +47,11 @@ RSpec.describe Users::RegistrationsController, type: :controller do
 
       it 'should create an admin' do
         params = default_admin_params
-        post :create, params
+        post :create, params: params
         expect(User.admins.count).to eq 1
         expect(Tenant.count).to eq 1
+        expect(current_tenant).to eq Tenant.last.subdomain
+        expect(subject).to redirect_to url_for(:root).gsub('www', Tenant.last.subdomain)
       end
     end
   end

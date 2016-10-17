@@ -31,6 +31,7 @@ class User < ApplicationRecord
   def setup_tenant
     if role == 'admin'
       self.tenant = Tenant.create! subdomain: self.subdomain
+      Apartment::Tenant.switch!(self.subdomain)
     else
       self.tenant = Tenant.find_by subdomain: self.subdomain
     end

@@ -23,6 +23,8 @@ require 'factory_girl_rails'
 #
 Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
+Rails.application.routes.default_url_options[:host] = 'www.example.com'
+
 # Checks for pending migration and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.maintain_test_schema!
@@ -58,4 +60,5 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.extend ControllerMacros, type: :controller
   config.include FactoryGirl::Syntax::Methods
+
 end
