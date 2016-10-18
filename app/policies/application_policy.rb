@@ -53,6 +53,6 @@ class ApplicationPolicy
 
   protected
   def is_own?(field='id')
-    user.id == resource.send(field)
+    user.id == record.send(field)
   end
 end
