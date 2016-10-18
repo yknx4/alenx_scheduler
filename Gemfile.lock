@@ -1,6 +1,6 @@
 GIT
-  remote: git://github.com/greetpoint/administrate.git
-  revision: 3ac84a8820a72ffc8ed6568ca899bcc9a8e0cdba
+  remote: git://github.com/yknx4/administrate.git
+  revision: b3144292ce2911d56d7960cbe249f6318a8afa07
   branch: rails5
   specs:
     administrate (0.2.1)

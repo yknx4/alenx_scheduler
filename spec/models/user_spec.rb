@@ -23,4 +23,16 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '#admin?' do
+    it 'should be admin when role admin is added' do
+      u = create(:admin)
+      expect(u.admin?).to be_truthy
+    end
+
+    it 'should be admin when role is set as admin' do
+      u = build(:admin)
+      expect(u.admin?).to be_truthy
+    end
+  end
+
 end

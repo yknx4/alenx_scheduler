@@ -48,7 +48,7 @@ gem 'simple_token_authentication', '~> 1.0'
 gem 'haml', '~> 4.0.5'
 gem 'haml-rails', '~> 0.9'
 
-gem 'administrate', github: 'greetpoint/administrate', branch: 'rails5'
+gem 'administrate', github: 'yknx4/administrate', branch: 'rails5'
 gem 'bourbon', '~> 5.0.0.beta.5'
 
 group :development, :test do
