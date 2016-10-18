@@ -19,7 +19,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable
 
-  belongs_to :tenant
+  belongs_to :tenan
+  belongs_to :schedule
   validates_presence_of :tenant, if: :tenant_required?
   validates_presence_of :subdomain, if: :subdomain_required?
   validates_presence_of :role, if: :new_record?
