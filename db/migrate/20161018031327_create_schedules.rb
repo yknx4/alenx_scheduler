@@ -4,8 +4,8 @@ class CreateSchedules < ActiveRecord::Migration[5.0]
     create_table :schedules do |t|
       t.string :timezone, null: false, default: 'America/Mexico_City'
       t.string :holidays, array: true, default: []
-      t.hstore :breaks, null: false, default: {}
-      t.hstore :hours, null: false, default: {}
+      t.hstore :breaks, null: false, default: ''
+      t.hstore :hours, null: false, default: ''
 
       t.timestamps
     end
