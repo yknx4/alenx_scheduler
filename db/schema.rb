@@ -27,15 +27,12 @@ ActiveRecord::Schema.define(version: 20161018031327) do
   end
 
   create_table "schedules", force: :cascade do |t|
-    t.string   "timezone",         default: "America/Mexico_City", null: false
-    t.string   "holidays",         default: [],                                 array: true
-    t.hstore   "breaks",           default: {},                    null: false
-    t.hstore   "hours",            default: {},                    null: false
-    t.string   "schedulable_type"
-    t.integer  "schedulable_id"
-    t.datetime "created_at",                                       null: false
-    t.datetime "updated_at",                                       null: false
-    t.index ["schedulable_type", "schedulable_id"], name: "index_schedules_on_schedulable_type_and_schedulable_id", using: :btree
+    t.string   "timezone",   default: "America/Mexico_City", null: false
+    t.string   "holidays",   default: [],                                 array: true
+    t.hstore   "breaks",     default: {},                    null: false
+    t.hstore   "hours",      default: {},                    null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
   end
 
   create_table "tenants", force: :cascade do |t|

@@ -6,7 +6,6 @@ class CreateSchedules < ActiveRecord::Migration[5.0]
       t.string :holidays, array: true, default: []
       t.hstore :breaks, null: false, default: {}
       t.hstore :hours, null: false, default: {}
-      t.references :schedulable, polymorphic: true, index: true
 
       t.timestamps
     end
