@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :organization do
-    name "MyString"
-    schedule nil
+    name { Faker::Company.name }
+    schedule
   end
 end
