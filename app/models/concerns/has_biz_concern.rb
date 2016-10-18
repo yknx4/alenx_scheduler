@@ -4,6 +4,7 @@ module HasBizConcern
   end
 
   def hours
+    return if super.nil?
     super.inject({}) do |new_hours, hour|
       if hour.present?
         key = hour[0].to_sym
@@ -16,6 +17,7 @@ module HasBizConcern
   end
 
   def breaks
+    return if super.nil?
     super.inject({}) do |new_breaks, breakk|
       if breakk.present?
         key = Date.parse(breakk[0])
