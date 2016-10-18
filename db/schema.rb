@@ -10,10 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161015044610) do
+ActiveRecord::Schema.define(version: 20161018031327) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "hstore"
 
   create_table "roles", force: :cascade do |t|
     t.string   "name"
@@ -23,6 +24,18 @@ ActiveRecord::Schema.define(version: 20161015044610) do
     t.datetime "updated_at"
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id", using: :btree
     t.index ["name"], name: "index_roles_on_name", using: :btree
+  end
+
+  create_table "schedules", force: :cascade do |t|
+    t.string   "timezone",         default: "America/Mexico_City", null: false
+    t.string   "holidays",         default: [],                                 array: true
+    t.hstore   "breaks",           default: {},                    null: false
+    t.hstore   "hours",            default: {},                    null: false
+    t.string   "schedulable_type"
+    t.integer  "schedulable_id"
+    t.datetime "created_at",                                       null: false
+    t.datetime "updated_at",                                       null: false
+    t.index ["schedulable_type", "schedulable_id"], name: "index_schedules_on_schedulable_type_and_schedulable_id", using: :btree
   end
 
   create_table "tenants", force: :cascade do |t|
