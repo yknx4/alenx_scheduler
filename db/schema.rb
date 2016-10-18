@@ -10,11 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161018031327) do
+ActiveRecord::Schema.define(version: 20161018145032) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "hstore"
+
+  create_table "organizations", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "schedule_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.integer  "tenant_id"
+    t.index ["schedule_id"], name: "index_organizations_on_schedule_id", using: :btree
+    t.index ["tenant_id"], name: "index_organizations_on_tenant_id", using: :btree
+  end
 
   create_table "roles", force: :cascade do |t|
     t.string   "name"
@@ -72,4 +82,5 @@ ActiveRecord::Schema.define(version: 20161018031327) do
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id", using: :btree
   end
 
+  add_foreign_key "organizations", "schedules"
 end
