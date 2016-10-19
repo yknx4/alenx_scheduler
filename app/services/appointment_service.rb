@@ -3,7 +3,7 @@ class AppointmentService < BaseAppointmentService
   # start_time, end_time, provider, client
   def make_appointment(start_time, end_time)
     raise TypeError.new('You must provide a User and a Provider') if user.blank? or provider.blank?
-    Appointment.create(start_time: start_time, end_time: end_time, provider: provider, user: user)
+    Appointment.create!(start_time: start_time, end_time: end_time, provider: provider, user: user)
   end
 
   # def available_slots(start_time, end_time)
