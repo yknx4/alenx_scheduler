@@ -8,6 +8,21 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '#subdomain' do
+    let(:tenant) { build(:tenant) }
+
+    it 'should return user subdomain if tenant is not present' do
+      user = build(:user, tenant: nil, subdomain: 'subdomain')
+      expect(user.subdomain).to eq 'subdomain'
+    end
+
+    it 'should return tenant subdomain if tenant is present' do
+      user = build(:user, tenant: tenant, subdomain: 'subdomain')
+      expect(user.subdomain).to eq tenant.subdomain
+    end
+
+  end
+
   describe '#valid' do
     it 'should be invalid without a subdomain nor tenant when it is a new record' do
       u = build(:user, tenant: nil)

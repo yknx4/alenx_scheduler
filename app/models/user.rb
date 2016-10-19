@@ -1,6 +1,12 @@
 class User < ApplicationRecord
   include RequiresSchedule
 
+# Include default devise modules. Others available are:
+# :confirmable, :lockable, :timeoutable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :trackable, :validatable,
+         :confirmable
+
   attr_accessor :role, :subdomain
 
   scope :users, -> { distinct.with_role :user}
@@ -20,21 +26,9 @@ class User < ApplicationRecord
   has_many :user_appointments, class_name: 'Appointment', foreign_key: 'user_id'
   has_many :provider_appointments, class_name: 'Appointment', foreign_key: 'provider_id'
 
-  def appointments
-    if provider?
-      provider_appointments
-    else
-      user_appointments
-    end
-  end
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable,
-         :confirmable
-
   belongs_to :tenant
   belongs_to :schedule
+
   validates_presence_of :schedule, if: :provider?
   validates_presence_of :tenant, if: :tenant_required?
   validates_presence_of :subdomain, if: :subdomain_required?
@@ -48,6 +42,14 @@ class User < ApplicationRecord
 
   def provider?
     role == 'provider'
+  end
+
+  def appointments
+    if provider?
+      provider_appointments
+    else
+      user_appointments
+    end
   end
 
   def assign_inital_role
@@ -76,6 +78,15 @@ class User < ApplicationRecord
 
   def initial_role
     roles.exists? ? roles.first.name : 'user'
+  end
+
+  alias_method :subdomain_getter, :subdomain
+  def subdomain
+    if tenant.present?
+      tenant.subdomain
+    else
+      subdomain_getter
+    end
   end
 
   private
