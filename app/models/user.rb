@@ -29,6 +29,7 @@ class User < ApplicationRecord
   validates_presence_of :tenant, if: :tenant_required?
   validates_presence_of :subdomain, if: :subdomain_required?
   validates_presence_of :role, if: :new_record?
+  validates_absence_of :services, unless: :provider?
   validate :tenant_is_not_taken
 
   def admin?

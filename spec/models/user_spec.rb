@@ -22,7 +22,20 @@ RSpec.describe User, type: :model do
       expect(u.errors.messages).to eq :tenant=>['already exists.']
     end
 
+    context 'as user' do
+      it 'should be invalid with services' do
+        u = build(:user)
+        u.services << build(:service)
+        expect(u.valid?).to be_falsey
+      end
+    end
+
     context 'as provider' do
+      it 'should be valid with services' do
+        u = build(:stuffed_provider)
+        expect(u.valid?).to be_truthy
+      end
+
       it 'should be invalid without a schedule' do
         u = build(:provider, schedule: nil)
         expect(u.valid?).to be_falsey

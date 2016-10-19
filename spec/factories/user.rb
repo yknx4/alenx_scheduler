@@ -16,4 +16,8 @@ FactoryGirl.define do
     role 'provider'
     schedule
   end
+
+  factory :stuffed_provider, parent: :provider do
+    services { [create(:service), create(:service), create(:service)] }
+  end
 end
