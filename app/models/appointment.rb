@@ -6,6 +6,10 @@ class Appointment < ApplicationRecord
   belongs_to :provider, class_name: 'User'
   belongs_to :user
 
+  scope :within, ->(start_time, end_time) do
+    where(start_time: start_time..end_time).or(where(end_time: start_time..end_time))
+  end
+
   private
   def should_not_overlap
     if start_time and end_time and user and provider
