@@ -8,4 +8,13 @@ RSpec.describe Tenant, type: :model do
       expect(tenant.valid?).to be_falsey
     end
   end
+
+  describe '#new' do
+    it 'should create an organization' do
+      tenant = create(:tenant)
+      tenant.switch!
+      expect(Organization.count).to eq 1
+      expect(tenant.organization.present?).to be_truthy
+    end
+  end
 end
