@@ -10,11 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161019141838) do
+ActiveRecord::Schema.define(version: 20161019174733) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "hstore"
+
+  create_table "appointments", force: :cascade do |t|
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.integer  "provider_id"
+    t.integer  "user_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.index ["provider_id"], name: "index_appointments_on_provider_id", using: :btree
+    t.index ["user_id"], name: "index_appointments_on_user_id", using: :btree
+  end
 
   create_table "organizations", force: :cascade do |t|
     t.string   "name"
@@ -101,6 +112,8 @@ ActiveRecord::Schema.define(version: 20161019141838) do
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id", using: :btree
   end
 
+  add_foreign_key "appointments", "users"
+  add_foreign_key "appointments", "users", column: "provider_id"
   add_foreign_key "organizations", "schedules"
   add_foreign_key "user_services", "services"
   add_foreign_key "user_services", "users"

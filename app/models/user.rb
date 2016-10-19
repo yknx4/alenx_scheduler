@@ -17,6 +17,16 @@ class User < ApplicationRecord
   has_many :roles, through: :users_roles
   has_many :user_services
   has_many :services, through: :user_services
+  has_many :user_appointments, class_name: 'Appointment', foreign_key: 'user_id'
+  has_many :provider_appointments, class_name: 'Appointment', foreign_key: 'provider_id'
+
+  def appointments
+    if provider?
+      provider_appointments
+    else
+      user_appointments
+    end
+  end
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
