@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :user do
     tenant
-    username              { Faker::Internet.user_name }
+    username              { Faker::StarWars.character }
     email                 { Faker::Internet.email }
     password              'password'
     password_confirmation 'password'
