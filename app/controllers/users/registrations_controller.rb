@@ -62,7 +62,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def after_sign_up_path_for(resource)
     if without_tenant?
       sign_out resource
-      new_user_session_url.gsub 'www', user_subdomain(resource)
+      new_user_session_url(subdomain: resource.subdomain)
     else
       stored_location_for(resource) || url_for(resource) || root_path
       # super(resource)
