@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161019140518) do
+ActiveRecord::Schema.define(version: 20161019141838) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,6 +59,16 @@ ActiveRecord::Schema.define(version: 20161019140518) do
     t.index ["subdomain"], name: "index_tenants_on_subdomain", unique: true, using: :btree
   end
 
+  create_table "user_services", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "service_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["service_id"], name: "index_user_services_on_service_id", using: :btree
+    t.index ["user_id", "service_id"], name: "index_user_services_on_user_id_and_service_id", unique: true, using: :btree
+    t.index ["user_id"], name: "index_user_services_on_user_id", using: :btree
+  end
+
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
     t.string   "username",               default: "", null: false
@@ -92,5 +102,7 @@ ActiveRecord::Schema.define(version: 20161019140518) do
   end
 
   add_foreign_key "organizations", "schedules"
+  add_foreign_key "user_services", "services"
+  add_foreign_key "user_services", "users"
   add_foreign_key "users", "schedules"
 end
