@@ -6,8 +6,46 @@ class AppointmentService < BaseAppointmentService
     Appointment.create!(start_time: start_time, end_time: end_time, provider: provider, user: user)
   end
 
-  # def available_slots(start_time, end_time)
-  # end
+  def available_slots(start_time, end_time)
+    providers = User.providers
+    tenant_schedule = Tenant.current.organization.schedule.biz
+
+    if provider.present?
+      providers = providers.where(provider_id: provider.id)
+    end
+
+    if services.present?
+      providers = providers.joins(:services).merge(Service.where(id: services))
+    end
+
+    appointments = Appointment.where(provider_id: providers.pluck(:id)).inject({}) do |hash, appointment|
+      hash[appointment.provider_id] ||= []
+      hash[appointment.provider_id].push [appointment.start_time, appointment.end_time]
+      hash
+    end
+
+    slots = {}
+
+    providers.each do |provider|
+      final_schedule = provider.schedule.biz & tenant_schedule
+      provider_appointments = appointments[provider.id] || []
+
+      provider_appointments.each do |provider_appointment|
+        start_time = provider_appointment[0]
+        end_time = provider_appointment[1]
+        start_date = start_time.to_date
+        end_date = end_time.to_date
+        if start_date == end_date
+          current_break = final_schedule.breaks
+        else
+
+        end
+      end
+
+    end
+
+
+  end
 
   def get_appointments(start_time=nil, end_time=nil)
     raise TypeError.new('You must provide a User or a Provider') if user.blank? and provider.blank?
@@ -22,7 +60,7 @@ class AppointmentService < BaseAppointmentService
 
     if start_time.present?
       if end_time.present?
-        records = records.where(start_time: start_time..end_time).or(records.where(end_time: start_time..end_time))
+        records = records.within(start_time, end_time)
       else
         Rails.logger.warn 'You are getting appointments with a start_time but without an end_time'
       end
@@ -34,4 +72,5 @@ class AppointmentService < BaseAppointmentService
   def cancel_appointment(appointment_id)
     Appointment.find(appointment_id).destroy
   end
+
 end
