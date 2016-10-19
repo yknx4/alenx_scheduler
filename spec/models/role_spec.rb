@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Role, type: :model do
+  include_context 'default_tenant'
+
   describe '#roles' do
     let!(:user) {create(:user)}
     let!(:admin) {create(:admin)}
