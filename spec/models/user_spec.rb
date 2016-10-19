@@ -68,6 +68,12 @@ RSpec.describe User, type: :model do
         expect(u.schedule.present?).to be_truthy
       end
     end
+
+    it 'should set tenant to current tenant by default' do
+      u = User.new
+      expect(u.tenant).to eq tenant
+    end
+
   end
 
   describe '#admin?' do
