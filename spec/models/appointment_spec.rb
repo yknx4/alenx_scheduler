@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Appointment, type: :model do
   include_context 'default_tenant'
-  
+
   describe '#valid' do
     it 'should be invalid without a provider' do
       a = build(:appointment, provider: nil)
