@@ -14,5 +14,6 @@ FactoryGirl.define do
 
   factory :provider, parent: :user do
     role 'provider'
+    schedule
   end
 end

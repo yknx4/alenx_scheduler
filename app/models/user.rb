@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include RequiresSchedule
+
   attr_accessor :role, :subdomain
 
   scope :users, -> { distinct.with_role :user}
@@ -21,14 +23,18 @@ class User < ApplicationRecord
 
   belongs_to :tenant
   belongs_to :schedule
+  validates_presence_of :schedule, if: :provider?
   validates_presence_of :tenant, if: :tenant_required?
   validates_presence_of :subdomain, if: :subdomain_required?
   validates_presence_of :role, if: :new_record?
-
   validate :tenant_is_not_taken
 
   def admin?
     role == 'admin'
+  end
+
+  def provider?
+    role == 'provider'
   end
 
   def assign_inital_role
@@ -80,7 +86,7 @@ class User < ApplicationRecord
 
   def tenant_is_not_taken
     return unless admin?
-    if subdomain_taken?
+    if subdomain_taken? and tenant.blank?
       errors[:tenant] << 'already exists.'
     end
   end
