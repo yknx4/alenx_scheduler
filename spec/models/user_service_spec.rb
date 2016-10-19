@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe UserService, type: :model do
+  include_context 'default_tenant'
+
   describe '#valid' do
     let(:user_service) { create(:user_service) }
 
