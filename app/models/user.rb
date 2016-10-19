@@ -13,7 +13,7 @@ class User < ApplicationRecord
   scope :admins, -> { distinct.with_role :admin}
   scope :providers, -> { distinct.with_role :provider}
 
-  after_initialize :assign_inital_role
+  after_initialize :assign_inital_values
   after_validation :setup_tenant, only: [:create], if: :require_setup_tenant?
   after_commit :update_role
 
@@ -35,6 +35,7 @@ class User < ApplicationRecord
   validates_presence_of :role, if: :new_record?
   validates_absence_of :services, unless: :provider?
   validate :tenant_is_not_taken
+  validate :tenant_is_active, unless: :admin?
 
   def admin?
     role == 'admin'
@@ -52,8 +53,9 @@ class User < ApplicationRecord
     end
   end
 
-  def assign_inital_role
+  def assign_inital_values
     self.role ||= initial_role
+    self.tenant ||= Tenant.current
   end
 
   def setup_tenant
@@ -111,12 +113,18 @@ class User < ApplicationRecord
   def tenant_is_not_taken
     return unless admin?
     if subdomain_taken? and tenant.blank?
-      errors[:tenant] << 'already exists.'
+      errors.add :tenant, 'already exists.'
     end
   end
 
   def subdomain_taken?
     Tenant.where(subdomain: subdomain).exists?
+  end
+
+  def tenant_is_active
+    if errors[:tenant].blank? and Apartment::Tenant.current != subdomain
+      errors.add :tenant, 'has to be active'
+    end
   end
 
 end
