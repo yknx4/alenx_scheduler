@@ -9,18 +9,26 @@ class AppointmentService < BaseAppointmentService
   # def available_slots(start_time, end_time)
   # end
 
-  def get_appointments
+  def get_appointments(start_time=nil, end_time=nil)
     raise TypeError.new('You must provide a User or a Provider') if user.blank? and provider.blank?
-    base = Appointment
+    records = Appointment.all
     if user.present?
-      base = base.where(user_id: user.id)
+      records = records.where(user_id: user.id)
     end
 
     if provider.present?
-      base = base.where(provider_id: provider.id)
+      records = records.where(provider_id: provider.id)
     end
 
-    base
+    if start_time.present?
+      if end_time.present?
+        records = records.where(start_time: start_time..end_time).or(records.where(end_time: start_time..end_time))
+      else
+        Rails.logger.warn 'You are getting appointments with a start_time but without an end_time'
+      end
+    end
+
+    records
   end
 
   def cancel_appointment(appointment_id)

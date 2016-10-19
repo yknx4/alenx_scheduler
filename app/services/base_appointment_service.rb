@@ -14,7 +14,7 @@ class BaseAppointmentService
     raise NotImplementedError
   end
 
-  def get_appointments
+  def get_appointments(start_time=nil, end_time=nil)
     raise NotImplementedError
   end
 

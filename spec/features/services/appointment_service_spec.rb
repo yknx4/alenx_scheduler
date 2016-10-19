@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe AppointmentService, type: :feature do
+  include_context 'default_tenant'
+  
   let(:user) { create(:user) }
   let(:provider) { create(:provider) }
 
@@ -42,6 +44,13 @@ RSpec.describe AppointmentService, type: :feature do
     before do
       create(:appointment, provider: provider)
       create(:appointment)
+    end
+
+    it 'should get only appointments within a time frame' do
+      appointment_service = AppointmentService.new user: user
+      start_time = appointments.first.start_time
+      end_time = appointments.first.end_time
+      expect(appointment_service.get_appointments(start_time, end_time)).to match_array Appointment.where(start_time: start_time..end_time).or(Appointment.where(end_time: start_time..end_time))
     end
 
     context 'with only an user' do
