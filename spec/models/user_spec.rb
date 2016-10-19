@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
+  include_context 'default_tenant'
+
   describe '#roles' do
     it 'should have user role by default' do
       user = create(:user)
@@ -9,7 +11,6 @@ RSpec.describe User, type: :model do
   end
 
   describe '#subdomain' do
-    let(:tenant) { build(:tenant) }
 
     it 'should return user subdomain if tenant is not present' do
       user = build(:user, tenant: nil, subdomain: 'subdomain')
@@ -17,7 +18,7 @@ RSpec.describe User, type: :model do
     end
 
     it 'should return tenant subdomain if tenant is present' do
-      user = build(:user, tenant: tenant, subdomain: 'subdomain')
+      user = build(:user, subdomain: 'subdomain')
       expect(user.subdomain).to eq tenant.subdomain
     end
 
@@ -31,7 +32,6 @@ RSpec.describe User, type: :model do
     end
 
     it 'should be invalid if the new user is an admin and the tenant already exists' do
-      tenant = create(:tenant)
       u = build(:admin, tenant: nil, subdomain: tenant.subdomain)
       expect(u.valid?).to be_falsey
       expect(u.errors.messages).to eq :tenant=>['already exists.']
@@ -42,6 +42,7 @@ RSpec.describe User, type: :model do
         u = build(:user)
         u.services << build(:service)
         expect(u.valid?).to be_falsey
+        expect(u.errors[:services].present?).to be_truthy
       end
     end
 
@@ -70,8 +71,12 @@ RSpec.describe User, type: :model do
   end
 
   describe '#admin?' do
+    before do
+      Apartment::Tenant.reset
+    end
+
     it 'should be admin when role admin is added' do
-      u = create(:admin)
+      u = create(:admin, subdomain: 'new')
       expect(u.admin?).to be_truthy
     end
 
@@ -86,7 +91,7 @@ RSpec.describe User, type: :model do
       it 'should have an schedule' do
         u = create(:provider)
         expect(u.schedule.present?).to be_truthy
-        expect(Schedule.count).to eq 1
+        expect(u.schedule.persisted?).to be_truthy
       end
     end
   end
