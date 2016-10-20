@@ -10,7 +10,7 @@ module HasBizConcern
       if hour.present?
         key = hour[0].to_sym
         raw_value = hour[1]
-        value = eval(raw_value) if raw_value.include?('{') && raw_value.include?('}')
+        value = eval(raw_value) if raw_value.include?('{') and raw_value.include?('}')
         new_hours[key] = value
       end
       new_hours
@@ -23,7 +23,7 @@ module HasBizConcern
       if breakk.present?
         key = Date.parse(breakk[0])
         raw_value = breakk[1]
-        value = eval(raw_value) if raw_value.include?('{') && raw_value.include?('}')
+        value = eval(raw_value) if raw_value.include?('{') and raw_value.include?('}')
         new_breaks[key] = value
       end
       new_breaks

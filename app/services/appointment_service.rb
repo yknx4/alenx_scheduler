@@ -23,7 +23,7 @@ class AppointmentService < BaseAppointmentService
 
   def get_appointments(start_time = nil,
                        end_time = nil)
-    raise TypeError, 'You must provide a User or a Provider' if user.blank? && provider.blank?
+    raise TypeError, 'You must provide a User or a Provider' if user.blank? and provider.blank?
 
     records = appointments_query
     if start_time.present? and end_time.present?

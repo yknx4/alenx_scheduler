@@ -106,14 +106,14 @@ class User < ApplicationRecord
   end
 
   def subdomain_required?
-    new_record? && tenant.blank?
+    new_record? and tenant.blank?
   end
 
   def tenant_required?
-    new_record? && subdomain.blank?
+    new_record? and subdomain.blank?
   end
 
   def require_setup_tenant?
-    subdomain.present? && (self.tenant.blank? || errors.present?)
+    subdomain.present? and (self.tenant.blank? || errors.present?)
   end
 end
