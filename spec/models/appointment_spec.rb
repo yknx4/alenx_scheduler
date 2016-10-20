@@ -32,5 +32,11 @@ RSpec.describe Appointment, type: :model do
       expect(invalid_appointment.valid?).to be_falsey
       expect(invalid_appointment.errors[:user].present?).to be_truthy
     end
+
+    it 'should be invalid when start_time and end_time are on different days' do
+      a = build(:appointment, start_time: Time.now, end_time: 1.day.from_now)
+      expect(a.valid?).to be_falsey
+      expect(a.errors[:start_time].present?).to be_truthy
+    end
   end
 end
