@@ -35,3 +35,8 @@ PreCommit:
   RuboCop:
     enabled: true
     command: ['bundle', 'exec', 'rubocop'] # Invoke within Bundler context
+
+  EsLint:
+    required_executable: 'npm'
+    enabled: true
+    command: ['npm', 'run', 'lint', '--', '-f', 'compact']
