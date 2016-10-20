@@ -1,11 +1,11 @@
 FactoryGirl.define do
 
   sequence :start_time do |n|
-    (n * 2).hours.from_now - rand(60).minutes
+    n.days.from_now.middle_of_day - rand(60).minutes
   end
 
   sequence :end_time do |n|
-    (n * 2).hours.from_now + rand(60).minutes
+    n.days.from_now.middle_of_day + rand(60).minutes
   end
 
   factory :appointment do
