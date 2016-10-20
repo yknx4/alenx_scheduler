@@ -22,4 +22,8 @@ module BizHelper
       sun: { '00:00' => '24:00' }
     }
   end
+
+  def periods_between(biz, start_time, end_time)
+    biz.periods.after(start_time).timeline.until(end_time).to_a
+  end
 end

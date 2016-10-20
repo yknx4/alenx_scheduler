@@ -1,8 +1,8 @@
 class Appointment < ApplicationRecord
   validates :user, :provider, :start_time, :end_time, presence: true
   validate :start_date_cannot_be_later_than_end_time
-  validate :should_not_overlap
   validate :should_be_on_same_day
+  validate :should_not_overlap
 
   belongs_to :provider, class_name: 'User'
   belongs_to :user
@@ -19,14 +19,19 @@ class Appointment < ApplicationRecord
   end
 
   def should_not_overlap
-    return unless start_time && end_time && user && provider
+    return unless errors.blank?
+    errors.add :provider, "isn't available at that time" if provider_overlaps?
+    errors.add :user, "isn't available at that time" if user_overlaps?
+  end
+
+  def user_overlaps?
+    service = AppointmentService.new user: user
+    service.get_appointments(start_time, end_time).present?
+  end
+
+  def provider_overlaps?
     service = AppointmentService.new provider: provider
-    overlaps = service.get_appointments(start_time, end_time).present?
-    errors.add :provider, "isn't available at that time" if overlaps
-    service.provider = nil
-    service.user = user
-    overlaps = service.get_appointments(start_time, end_time).present?
-    errors.add :user, "isn't available at that time" if overlaps
+    service.get_appointments(start_time, end_time).present?
   end
 
   def start_date_cannot_be_later_than_end_time
