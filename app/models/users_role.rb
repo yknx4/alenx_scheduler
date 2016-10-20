@@ -1,5 +1,5 @@
 class UsersRole < ApplicationRecord
-  validates_presence_of :user, :role
+  validates :user, :role, presence: true
   belongs_to :user
   belongs_to :role
 end

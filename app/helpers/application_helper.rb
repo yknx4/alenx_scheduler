@@ -1,7 +1,7 @@
 module ApplicationHelper
   def without_tenant?
     return true unless request.subdomains.present?
-    current_subdomain === 'www'
+    current_subdomain == 'www'
   end
 
   def current_subdomain

@@ -29,10 +29,10 @@ class User < ApplicationRecord
   belongs_to :tenant
   belongs_to :schedule
 
-  validates_presence_of :schedule, if: :provider?
-  validates_presence_of :tenant, if: :tenant_required?
-  validates_presence_of :subdomain, if: :subdomain_required?
-  validates_presence_of :role, if: :new_record?
+  validates :schedule, presence: { if: :provider? }
+  validates :tenant, presence: { if: :tenant_required? }
+  validates :subdomain, presence: { if: :subdomain_required? }
+  validates :role, presence: { if: :new_record? }
   validates_absence_of :services, unless: :provider?
   validate :tenant_is_not_taken
   validate :tenant_is_active, unless: :admin?
@@ -121,8 +121,7 @@ class User < ApplicationRecord
   end
 
   def tenant_is_active
-    if errors[:tenant].blank? && (Apartment::Tenant.current != subdomain)
-      errors.add :tenant, 'has to be active'
-    end
+    return if errors[:tenant].present? or Apartment::Tenant.current == subdomain
+    errors.add :tenant, 'has to be active'
   end
 end

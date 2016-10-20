@@ -8,10 +8,10 @@ class UserPolicy < ApplicationPolicy
   end
 
   def update?
-    user.admin? || is_own?
+    user.admin? || own?
   end
 
   def delete?
-    user.admin? || is_own?
+    user.admin? || own?
   end
 end

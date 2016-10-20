@@ -1,6 +1,6 @@
 class Service < ApplicationRecord
-  validates_presence_of :tag
-  validates_uniqueness_of :tag
+  validates :tag, presence: true
+  validates :tag, uniqueness: true
   has_many :user_services
   has_many :users, through: :user_services
 end

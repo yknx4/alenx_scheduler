@@ -14,12 +14,12 @@ end
 FactoryGirl.define do
   factory :schedule do
     timezone 'Etc/UTC'
-    holidays { (0..rand(10)).to_a.map { Faker::Date.between(Date.today, 1.years.from_now) } }
+    holidays { (0..rand(10)).to_a.map { Faker::Date.between(Time.zone.today, 1.year.from_now) } }
     breaks do
       {
-        Faker::Date.between(Date.today, 1.years.from_now) => { '09:00' => '10:30', '16:00' => '16:30' },
-        Faker::Date.between(Date.today, 1.years.from_now)  => { '12:15' => '12:45', '13:30' => '14:00' },
-        Faker::Date.between(Date.today, 1.years.from_now)  => time_range
+        Faker::Date.between(Time.zone.today, 1.year.from_now) => { '09:00' => '10:30', '16:00' => '16:30' },
+        Faker::Date.between(Time.zone.today, 1.year.from_now)  => { '12:15' => '12:45', '13:30' => '14:00' },
+        Faker::Date.between(Time.zone.today, 1.year.from_now)  => time_range
       }
     end
     hours do

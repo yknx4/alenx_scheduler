@@ -1,6 +1,6 @@
 class Schedule < ApplicationRecord
   prepend HasBizConcern
-  validates_presence_of :timezone, :hours
+  validates :timezone, :hours, presence: true
   has_one :organization
   has_one :user
 

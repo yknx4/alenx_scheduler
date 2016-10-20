@@ -10,7 +10,7 @@ RSpec.describe Organization, type: :model do
   end
   describe '#new' do
     it 'should create a schedule if not present' do
-      o = Organization.create name: 'test'
+      o = Organization.create! name: 'test'
       expect(o.schedule.present?).to be_truthy
     end
   end

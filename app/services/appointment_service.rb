@@ -23,7 +23,8 @@ class AppointmentService < BaseAppointmentService
     end
   end
 
-  def get_appointments(start_time = nil, end_time = nil)
+  def get_appointments(start_time = nil,
+                       end_time = nil)
     raise TypeError, 'You must provide a User or a Provider' if user.blank? && provider.blank?
     records = Appointment.all
     records = records.where(user_id: user.id) if user.present?
@@ -60,7 +61,8 @@ class AppointmentService < BaseAppointmentService
   end
 
   def providers_appointment_dates(provider_id)
-    @providers_appointment_dates ||= Appointment.joins(:provider).merge(available_slots_providers).each_with_object({}) do |appointment, hash|
+    providers_appointments = Appointment.joins(:provider).merge(available_slots_providers)
+    @providers_appointment_dates ||= providers_appointments.each_with_object({}) do |appointment, hash|
       hash[appointment.provider_id] ||= []
       hash[appointment.provider_id].push [appointment.start_time, appointment.end_time]
       hash

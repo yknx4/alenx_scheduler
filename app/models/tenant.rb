@@ -1,6 +1,7 @@
+# rubocop:disable Rails/SaveBang
 class Tenant < ApplicationRecord
-  validates_presence_of :subdomain
-  validates_uniqueness_of :subdomain
+  validates :subdomain, presence: true
+  validates :subdomain, uniqueness: true
   after_create :lease_apartment
 
   has_many :users
@@ -21,6 +22,14 @@ class Tenant < ApplicationRecord
     find_by(subdomain: current_tenant) unless public_tenant?
   end
 
+  def self.current_tenant
+    Apartment::Tenant.current
+  end
+
+  def self.public_tenant?
+    current_tenant == 'public'
+  end
+
   private
 
   def lease_apartment
@@ -29,12 +38,5 @@ class Tenant < ApplicationRecord
       Organization.create(tenant: self, name: subdomain)
     end
   end
-
-  def self.current_tenant
-    Apartment::Tenant.current
-  end
-
-  def self.public_tenant?
-    current_tenant == 'public'
-  end
 end
+# rubocop:enable Rails/SaveBang

@@ -1,3 +1,4 @@
+# rubocop:disable Eval
 module HasBizConcern
   def holidays
     super.map { |h| Date.parse(h) }
@@ -38,3 +39,4 @@ module HasBizConcern
     end
   end
 end
+# rubocop:enable Eval

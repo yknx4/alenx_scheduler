@@ -26,7 +26,8 @@ RSpec.describe User, type: :model do
     it 'should be invalid without a subdomain nor tenant when it is a new record' do
       u = build(:user, tenant: nil)
       expect(u.valid?).to be_falsey
-      expect(u.errors.details.as_json).to eq 'subdomain' => [{ 'error' => 'blank' }], 'tenant' => [{ 'error' => 'blank' }]
+      expect(u.errors.details.as_json).to eq 'subdomain' => [{ 'error' => 'blank' }],
+                                             'tenant' => [{ 'error' => 'blank' }]
     end
 
     it 'should be invalid if the new user is an admin and the tenant already exists' do
@@ -62,7 +63,7 @@ RSpec.describe User, type: :model do
       it 'should create a default schedule' do
         u = build(:user)
         u.role = 'provider'
-        u.save
+        u.save!
         expect(u.schedule.present?).to be_truthy
       end
     end
