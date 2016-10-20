@@ -12,6 +12,7 @@ module RequiresSchedule
       self.schedule ||= Schedule.new
     end
 
+    delegate :biz, to: :schedule
   end
 
   module ClassMethods

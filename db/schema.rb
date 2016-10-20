@@ -48,12 +48,12 @@ ActiveRecord::Schema.define(version: 20161019174733) do
   end
 
   create_table "schedules", force: :cascade do |t|
-    t.string   "timezone",   default: "America/Mexico_City", null: false
-    t.string   "holidays",   default: [],                                 array: true
-    t.hstore   "breaks",     default: {},                    null: false
-    t.hstore   "hours",                                      null: false
-    t.datetime "created_at",                                 null: false
-    t.datetime "updated_at",                                 null: false
+    t.string   "timezone",   default: "Etc/UTC", null: false
+    t.string   "holidays",   default: [],                     array: true
+    t.hstore   "breaks",     default: {},        null: false
+    t.hstore   "hours",                          null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
   end
 
   create_table "services", force: :cascade do |t|

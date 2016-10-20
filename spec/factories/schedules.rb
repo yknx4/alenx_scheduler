@@ -13,7 +13,7 @@ end
 
 FactoryGirl.define do
   factory :schedule do
-    timezone { Faker::Address.time_zone }
+    timezone 'Etc/UTC'
     holidays { (0..rand(10)).to_a.map { Faker::Date.between(Date.today, 1.years.from_now) } }
     breaks do
       {
