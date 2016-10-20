@@ -8,36 +8,13 @@ class AppointmentService < BaseAppointmentService
   end
 
   def available_slots(start_time, end_time)
-    providers = User.providers
     tenant_biz = Tenant.current.organization.schedule.biz
 
-    if provider.present?
-      providers = providers.where(id: provider.id)
-    end
+    available_slots_providers.inject({}) do |hash, provider|
+      provider_appointments = providers_appointment_dates provider.id
+      breaks = appointments_as_breaks provider_appointments
 
-    if services.present?
-      providers = providers.joins(:services).merge(Service.where(id: services))
-    end
-
-    appointments = Appointment.where(provider_id: providers.pluck(:id)).inject({}) do |hash, appointment|
-      hash[appointment.provider_id] ||= []
-      hash[appointment.provider_id].push [appointment.start_time, appointment.end_time]
-      hash
-    end
-
-    providers.inject({}) do |hash, provider|
       provider_biz = provider.schedule.biz
-      provider_appointments = appointments[provider.id] || []
-
-      breaks = provider_appointments.inject({}) do |breaks, provider_appointment|
-        start_time = provider_appointment[0]
-        end_time = provider_appointment[1]
-        start_date = start_time.to_date
-        breaks[start_date] ||= {}
-        breaks[start_date][start_time.to_s(:time)] = end_time.to_s(:time)
-        breaks
-      end
-
       breaks_biz = biz_with_only_breaks(breaks)
       full_biz = tenant_biz & provider_biz & breaks_biz
 
@@ -70,6 +47,42 @@ class AppointmentService < BaseAppointmentService
 
   def cancel_appointment(appointment_id)
     Appointment.find(appointment_id).destroy
+  end
+
+  private
+  def available_slots_providers
+    providers = User.providers
+
+    if provider.present?
+      providers = providers.where(id: provider.id)
+    end
+
+    if services.present?
+      providers = providers.joins(:services).merge(Service.where(id: services))
+    end
+
+    providers
+  end
+
+  def providers_appointment_dates(provider_id)
+    @providers_appointment_dates ||= Appointment.joins(:provider).merge(available_slots_providers).inject({}) do |hash, appointment|
+      hash[appointment.provider_id] ||= []
+      hash[appointment.provider_id].push [appointment.start_time, appointment.end_time]
+      hash
+    end
+
+    @providers_appointment_dates[provider_id] || []
+  end
+
+  def appointments_as_breaks(appointments)
+    appointments.inject({}) do |breaks, appointment|
+      start_time = appointment[0]
+      end_time = appointment[1]
+      start_date = start_time.to_date
+      breaks[start_date] ||= {}
+      breaks[start_date][start_time.to_s(:time)] = end_time.to_s(:time)
+      breaks
+    end
   end
 
 end
