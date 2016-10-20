@@ -1,15 +1,15 @@
 module HasBizConcern
   def holidays
-    super.map{|h| Date.parse(h)}
+    super.map { |h| Date.parse(h) }
   end
 
   def hours
     return if super.nil?
-    super.inject({}) do |new_hours, hour|
+    super.each_with_object({}) do |hour, new_hours|
       if hour.present?
         key = hour[0].to_sym
         raw_value = hour[1]
-        value = eval(raw_value) if raw_value.include?('{') and raw_value.include?('}')
+        value = eval(raw_value) if raw_value.include?('{') && raw_value.include?('}')
         new_hours[key] = value
       end
       new_hours
@@ -18,11 +18,11 @@ module HasBizConcern
 
   def breaks
     return if super.nil?
-    super.inject({}) do |new_breaks, breakk|
+    super.each_with_object({}) do |breakk, new_breaks|
       if breakk.present?
         key = Date.parse(breakk[0])
         raw_value = breakk[1]
-        value = eval(raw_value) if raw_value.include?('{') and raw_value.include?('}')
+        value = eval(raw_value) if raw_value.include?('{') && raw_value.include?('}')
         new_breaks[key] = value
       end
       new_breaks
@@ -31,10 +31,10 @@ module HasBizConcern
 
   def biz
     Biz.configure do |config|
-      config.hours = self.hours
-      config.breaks = self.breaks
-      config.holidays = self.holidays
-      config.time_zone = self.timezone
+      config.hours = hours
+      config.breaks = breaks
+      config.holidays = holidays
+      config.time_zone = timezone
     end
   end
 end

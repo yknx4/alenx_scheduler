@@ -11,7 +11,7 @@ class ApplicationPolicy
   end
 
   def show?
-    scope.where(:id => record.id).exists?
+    scope.where(id: record.id).exists?
   end
 
   def create?
@@ -52,7 +52,8 @@ class ApplicationPolicy
   end
 
   protected
-  def is_own?(field='id')
+
+  def is_own?(field = 'id')
     user.id == record.send(field)
   end
 end

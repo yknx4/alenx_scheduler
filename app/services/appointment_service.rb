@@ -3,14 +3,14 @@ class AppointmentService < BaseAppointmentService
 
   # start_time, end_time, provider, client
   def make_appointment(start_time, end_time)
-    raise TypeError.new('You must provide a User and a Provider') if user.blank? or provider.blank?
+    raise TypeError, 'You must provide a User and a Provider' if user.blank? || provider.blank?
     Appointment.create!(start_time: start_time, end_time: end_time, provider: provider, user: user)
   end
 
   def available_slots(start_time, end_time)
     tenant_biz = Tenant.current.organization.schedule.biz
 
-    available_slots_providers.inject({}) do |hash, provider|
+    available_slots_providers.each_with_object({}) do |provider, hash|
       provider_appointments = providers_appointment_dates provider.id
       breaks = appointments_as_breaks provider_appointments
 
@@ -23,16 +23,12 @@ class AppointmentService < BaseAppointmentService
     end
   end
 
-  def get_appointments(start_time=nil, end_time=nil)
-    raise TypeError.new('You must provide a User or a Provider') if user.blank? and provider.blank?
+  def get_appointments(start_time = nil, end_time = nil)
+    raise TypeError, 'You must provide a User or a Provider' if user.blank? && provider.blank?
     records = Appointment.all
-    if user.present?
-      records = records.where(user_id: user.id)
-    end
+    records = records.where(user_id: user.id) if user.present?
 
-    if provider.present?
-      records = records.where(provider_id: provider.id)
-    end
+    records = records.where(provider_id: provider.id) if provider.present?
 
     if start_time.present?
       if end_time.present?
@@ -50,12 +46,11 @@ class AppointmentService < BaseAppointmentService
   end
 
   private
+
   def available_slots_providers
     providers = User.providers
 
-    if provider.present?
-      providers = providers.where(id: provider.id)
-    end
+    providers = providers.where(id: provider.id) if provider.present?
 
     if services.present?
       providers = providers.joins(:services).merge(Service.where(id: services))
@@ -65,7 +60,7 @@ class AppointmentService < BaseAppointmentService
   end
 
   def providers_appointment_dates(provider_id)
-    @providers_appointment_dates ||= Appointment.joins(:provider).merge(available_slots_providers).inject({}) do |hash, appointment|
+    @providers_appointment_dates ||= Appointment.joins(:provider).merge(available_slots_providers).each_with_object({}) do |appointment, hash|
       hash[appointment.provider_id] ||= []
       hash[appointment.provider_id].push [appointment.start_time, appointment.end_time]
       hash
@@ -75,7 +70,7 @@ class AppointmentService < BaseAppointmentService
   end
 
   def appointments_as_breaks(appointments)
-    appointments.inject({}) do |breaks, appointment|
+    appointments.each_with_object({}) do |appointment, breaks|
       start_time = appointment[0]
       end_time = appointment[1]
       start_date = start_time.to_date
@@ -84,5 +79,4 @@ class AppointmentService < BaseAppointmentService
       breaks
     end
   end
-
 end

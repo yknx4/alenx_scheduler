@@ -1,4 +1,4 @@
-require "administrate/base_dashboard"
+require 'administrate/base_dashboard'
 
 class UserDashboard < Administrate::BaseDashboard
   # ATTRIBUTE_TYPES
@@ -8,29 +8,29 @@ class UserDashboard < Administrate::BaseDashboard
   # which determines how the attribute is displayed
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
-      users_roles: Field::HasMany,
-      roles: Field::HasMany,
-      role: RoleField,
-      tenant: Field::BelongsTo,
-      id: Field::Number,
-      email: Field::String,
-      username: Field::String,
-      encrypted_password: Field::String,
-      password: Field::String,
-      remember_created_at: Field::DateTime,
-      sign_in_count: Field::Number,
-      current_sign_in_at: Field::DateTime,
-      last_sign_in_at: Field::DateTime,
-      current_sign_in_ip: Field::String.with_options(searchable: false),
-      last_sign_in_ip: Field::String.with_options(searchable: false),
-      reset_password_token: Field::String,
-      confirmation_token: Field::String,
-      confirmed_at: Field::DateTime,
-      confirmation_sent_at: Field::DateTime,
-      reset_password_sent_at: Field::DateTime,
-      unconfirmed_email: Field::String,
-      created_at: Field::DateTime,
-      updated_at: Field::DateTime,
+    users_roles: Field::HasMany,
+    roles: Field::HasMany,
+    role: RoleField,
+    tenant: Field::BelongsTo,
+    id: Field::Number,
+    email: Field::String,
+    username: Field::String,
+    encrypted_password: Field::String,
+    password: Field::String,
+    remember_created_at: Field::DateTime,
+    sign_in_count: Field::Number,
+    current_sign_in_at: Field::DateTime,
+    last_sign_in_at: Field::DateTime,
+    current_sign_in_ip: Field::String.with_options(searchable: false),
+    last_sign_in_ip: Field::String.with_options(searchable: false),
+    reset_password_token: Field::String,
+    confirmation_token: Field::String,
+    confirmed_at: Field::DateTime,
+    confirmation_sent_at: Field::DateTime,
+    reset_password_sent_at: Field::DateTime,
+    unconfirmed_email: Field::String,
+    created_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -39,10 +39,10 @@ class UserDashboard < Administrate::BaseDashboard
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
   COLLECTION_ATTRIBUTES = [
-      :id,
-      :username,
-      :email,
-      :role
+    :id,
+    :username,
+    :email,
+    :role
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -63,16 +63,16 @@ class UserDashboard < Administrate::BaseDashboard
     :confirmation_sent_at,
     :unconfirmed_email,
     :created_at,
-    :updated_at,
+    :updated_at
   ].freeze
 
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = [
-      :role,
-      :email,
-      :username
+    :role,
+    :email,
+    :username
   ].freeze
 
   # Overwrite this method to customize how users are displayed

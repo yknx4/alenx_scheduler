@@ -4,9 +4,9 @@ RSpec.describe Role, type: :model do
   include_context 'default_tenant'
 
   describe '#roles' do
-    let!(:user) {create(:user)}
-    let!(:admin) {create(:admin)}
-    let!(:provider) {create(:provider)}
+    let!(:user) { create(:user) }
+    let!(:admin) { create(:admin) }
+    let!(:provider) { create(:provider) }
 
     it 'should have 3 users' do
       expect(User.count).to eq 3
@@ -23,6 +23,5 @@ RSpec.describe Role, type: :model do
     it 'should only list admins for Provider' do
       expect(User.providers.count).to eq 1
     end
-
   end
 end

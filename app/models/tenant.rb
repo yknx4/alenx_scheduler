@@ -14,20 +14,19 @@ class Tenant < ApplicationRecord
   end
 
   def switch!
-    Apartment::Tenant.switch!(self.subdomain)
+    Apartment::Tenant.switch!(subdomain)
   end
 
   def self.current
-    unless public_tenant?
-      find_by(subdomain: current_tenant)
-    end
+    find_by(subdomain: current_tenant) unless public_tenant?
   end
 
   private
+
   def lease_apartment
-    Apartment::Tenant.create(self.subdomain)
+    Apartment::Tenant.create(subdomain)
     around_tenant do
-      Organization.create(tenant: self, name: self.subdomain)
+      Organization.create(tenant: self, name: subdomain)
     end
   end
 
@@ -38,5 +37,4 @@ class Tenant < ApplicationRecord
   def self.public_tenant?
     current_tenant == 'public'
   end
-
 end

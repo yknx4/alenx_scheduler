@@ -14,16 +14,14 @@ module ApplicationHelper
   end
 
   def policy_for_resource(symbol)
-   default_policy symbol_to_class(symbol)
+    default_policy symbol_to_class(symbol)
   end
 
   def default_policy(element)
-    begin
-      policy(element)
-    rescue Pundit::NotDefinedError
-      element = element.new if element.is_a?(Class)
-      ApplicationPolicy.new(current_user, element)
-    end
+    policy(element)
+  rescue Pundit::NotDefinedError
+    element = element.new if element.is_a?(Class)
+    ApplicationPolicy.new(current_user, element)
   end
 
   def symbol_to_class(symbol)
@@ -31,6 +29,5 @@ module ApplicationHelper
   end
 
   def pry_me
-    binding.pry
   end
 end

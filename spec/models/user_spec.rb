@@ -11,7 +11,6 @@ RSpec.describe User, type: :model do
   end
 
   describe '#subdomain' do
-
     it 'should return user subdomain if tenant is not present' do
       user = build(:user, tenant: nil, subdomain: 'subdomain')
       expect(user.subdomain).to eq 'subdomain'
@@ -21,20 +20,19 @@ RSpec.describe User, type: :model do
       user = build(:user, subdomain: 'subdomain')
       expect(user.subdomain).to eq tenant.subdomain
     end
-
   end
 
   describe '#valid' do
     it 'should be invalid without a subdomain nor tenant when it is a new record' do
       u = build(:user, tenant: nil)
       expect(u.valid?).to be_falsey
-      expect(u.errors.details.as_json).to eq "subdomain" => [{"error" => 'blank'}], "tenant" => [{"error" => 'blank'}]
+      expect(u.errors.details.as_json).to eq 'subdomain' => [{ 'error' => 'blank' }], 'tenant' => [{ 'error' => 'blank' }]
     end
 
     it 'should be invalid if the new user is an admin and the tenant already exists' do
       u = build(:admin, tenant: nil, subdomain: tenant.subdomain)
       expect(u.valid?).to be_falsey
-      expect(u.errors.messages).to eq :tenant=>['already exists.']
+      expect(u.errors.messages).to eq tenant: ['already exists.']
     end
 
     context 'as user' do
@@ -73,7 +71,6 @@ RSpec.describe User, type: :model do
       u = User.new
       expect(u.tenant).to eq tenant
     end
-
   end
 
   describe '#admin?' do
@@ -101,5 +98,4 @@ RSpec.describe User, type: :model do
       end
     end
   end
-
 end

@@ -1,4 +1,4 @@
-require "administrate/base_dashboard"
+require 'administrate/base_dashboard'
 
 class UsersRoleDashboard < Administrate::BaseDashboard
   # ATTRIBUTE_TYPES
@@ -9,7 +9,7 @@ class UsersRoleDashboard < Administrate::BaseDashboard
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
     user: Field::BelongsTo,
-    role: Field::BelongsTo,
+    role: Field::BelongsTo
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -19,14 +19,14 @@ class UsersRoleDashboard < Administrate::BaseDashboard
   # Feel free to add, remove, or rearrange items.
   COLLECTION_ATTRIBUTES = [
     :user,
-    :role,
+    :role
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
   SHOW_PAGE_ATTRIBUTES = [
     :user,
-    :role,
+    :role
   ].freeze
 
   # FORM_ATTRIBUTES
@@ -34,7 +34,7 @@ class UsersRoleDashboard < Administrate::BaseDashboard
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = [
     :user,
-    :role,
+    :role
   ].freeze
 
   # Overwrite this method to customize how users roles are displayed

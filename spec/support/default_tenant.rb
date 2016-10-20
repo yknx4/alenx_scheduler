@@ -1,11 +1,9 @@
-RSpec.shared_context 'default_tenant', :shared_context => :metadata do
+RSpec.shared_context 'default_tenant', shared_context: :metadata do
   let(:tenant) { create(:tenant) }
 
   before(:each) do
     tenant.switch!
-    if try(:request)
-      request.host = "#{tenant.subdomain}.example.com"
-    end
+    request.host = "#{tenant.subdomain}.example.com" if try(:request)
   end
 
   after(:each) do

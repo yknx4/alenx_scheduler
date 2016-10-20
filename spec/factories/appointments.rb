@@ -1,5 +1,4 @@
 FactoryGirl.define do
-
   sequence :start_time do |n|
     n.days.from_now.middle_of_day - rand(60).minutes
   end

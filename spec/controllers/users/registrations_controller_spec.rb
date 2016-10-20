@@ -3,13 +3,13 @@ include Rails.application.routes.url_helpers
 
 def default_user_params(subdomain = nil)
   {
-      user: {
-          email: Faker::Internet.email,
-          username: Faker::Internet.user_name,
-          password: 'password',
-          password_confirmation: 'password',
-          subdomain: subdomain
-      }
+    user: {
+      email: Faker::Internet.email,
+      username: Faker::Internet.user_name,
+      password: 'password',
+      password_confirmation: 'password',
+      subdomain: subdomain
+    }
   }
 end
 

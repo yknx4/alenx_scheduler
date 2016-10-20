@@ -7,8 +7,9 @@ class Organization < ApplicationRecord
   validates_presence_of :schedule
 
   private
+
   def only_one_organization
-    if new_record? and Organization.count >= 1
+    if new_record? && (Organization.count >= 1)
       errors[:base] << 'can only exists once per tenant'
     end
   end

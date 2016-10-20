@@ -1,4 +1,4 @@
-require "administrate/base_dashboard"
+require 'administrate/base_dashboard'
 
 class TenantDashboard < Administrate::BaseDashboard
   # ATTRIBUTE_TYPES
@@ -12,7 +12,7 @@ class TenantDashboard < Administrate::BaseDashboard
     id: Field::Number,
     subdomain: Field::String,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -24,7 +24,7 @@ class TenantDashboard < Administrate::BaseDashboard
     :users,
     :id,
     :subdomain,
-    :created_at,
+    :created_at
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -34,7 +34,7 @@ class TenantDashboard < Administrate::BaseDashboard
     :id,
     :subdomain,
     :created_at,
-    :updated_at,
+    :updated_at
   ].freeze
 
   # FORM_ATTRIBUTES
@@ -42,7 +42,7 @@ class TenantDashboard < Administrate::BaseDashboard
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = [
     :users,
-    :subdomain,
+    :subdomain
   ].freeze
 
   # Overwrite this method to customize how tenants are displayed

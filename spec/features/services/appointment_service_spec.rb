@@ -27,7 +27,7 @@ RSpec.describe AppointmentService, type: :feature do
     it 'should show all day as slot for each provider' do
       a_service = AppointmentService.new user: user
       slots = a_service.available_slots(Time.now.utc.beginning_of_day, Time.now.utc.end_of_day)
-      expect(slots.all?{|id, lapse| lapse.first.start_time == Time.now.utc.beginning_of_day and lapse.first.end_time == Time.now.utc.end_of_day }).to be_truthy
+      expect(slots.all? { |_id, lapse| (lapse.first.start_time == Time.now.utc.beginning_of_day) && (lapse.first.end_time == Time.now.utc.end_of_day) }).to be_truthy
       expect(slots.count).to eq User.providers.count
     end
   end
@@ -60,10 +60,10 @@ RSpec.describe AppointmentService, type: :feature do
     let(:provider2) { create(:provider) }
     let(:appointments) do
       [
-          create(:appointment, user: user, provider: provider),
-          create(:appointment, user: user, provider: provider),
-          create(:appointment, user: user),
-          create(:appointment, user: user)
+        create(:appointment, user: user, provider: provider),
+        create(:appointment, user: user, provider: provider),
+        create(:appointment, user: user),
+        create(:appointment, user: user)
       ]
     end
 

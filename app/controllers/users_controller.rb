@@ -4,6 +4,7 @@ class UsersController < ApplicationController
   end
 
   private
+
   def find_user
     @user = User.find_by(id: resource_id)
     redirect_to :root if @user.blank?

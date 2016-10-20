@@ -1,17 +1,17 @@
 class User < ApplicationRecord
   include RequiresSchedule
 
-# Include default devise modules. Others available are:
-# :confirmable, :lockable, :timeoutable and :omniauthable
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable
 
   attr_accessor :role, :subdomain
 
-  scope :users, -> { distinct.with_role :user}
-  scope :admins, -> { distinct.with_role :admin}
-  scope :providers, -> { distinct.with_role :provider}
+  scope :users, -> { distinct.with_role :user }
+  scope :admins, -> { distinct.with_role :admin }
+  scope :providers, -> { distinct.with_role :provider }
 
   after_initialize :assign_inital_values
   after_validation :setup_tenant, only: [:create], if: :require_setup_tenant?
@@ -59,17 +59,17 @@ class User < ApplicationRecord
   end
 
   def setup_tenant
-    if role == 'admin' and errors[:tenant].empty?
-      self.tenant = Tenant.create! subdomain: self.subdomain
-      Apartment::Tenant.switch!(self.subdomain)
+    if (role == 'admin') && errors[:tenant].empty?
+      self.tenant = Tenant.create! subdomain: subdomain
+      Apartment::Tenant.switch!(subdomain)
     else
-      self.tenant = Tenant.find_by subdomain: self.subdomain
+      self.tenant = Tenant.find_by subdomain: subdomain
     end
 
-    Rails.application.routes.default_url_options[:host] = self.subdomain + '.example.com' if Rails.env.test?
+    Rails.application.routes.default_url_options[:host] = subdomain + '.example.com' if Rails.env.test?
   end
 
-  alias_method :role_setter, :role=
+  alias role_setter role=
   def role=(value)
     if %w(user provider admin).include?(value)
       role_setter value
@@ -82,7 +82,7 @@ class User < ApplicationRecord
     roles.exists? ? roles.first.name : 'user'
   end
 
-  alias_method :subdomain_getter, :subdomain
+  alias subdomain_getter subdomain
   def subdomain
     if tenant.present?
       tenant.subdomain
@@ -92,6 +92,7 @@ class User < ApplicationRecord
   end
 
   private
+
   def update_role
     return if has_role?(role)
     roles.destroy_all
@@ -99,22 +100,20 @@ class User < ApplicationRecord
   end
 
   def subdomain_required?
-    new_record? and tenant.blank?
+    new_record? && tenant.blank?
   end
 
   def tenant_required?
-    new_record? and subdomain.blank?
+    new_record? && subdomain.blank?
   end
 
   def require_setup_tenant?
-    self.subdomain.present? and (self.tenant.blank? or errors.present?)
+    subdomain.present? && (self.tenant.blank? || errors.present?)
   end
 
   def tenant_is_not_taken
     return unless admin?
-    if subdomain_taken? and tenant.blank?
-      errors.add :tenant, 'already exists.'
-    end
+    errors.add :tenant, 'already exists.' if subdomain_taken? && tenant.blank?
   end
 
   def subdomain_taken?
@@ -122,9 +121,8 @@ class User < ApplicationRecord
   end
 
   def tenant_is_active
-    if errors[:tenant].blank? and Apartment::Tenant.current != subdomain
+    if errors[:tenant].blank? && (Apartment::Tenant.current != subdomain)
       errors.add :tenant, 'has to be active'
     end
   end
-
 end

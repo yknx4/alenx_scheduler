@@ -16,8 +16,5 @@ module RequiresSchedule
   end
 
   module ClassMethods
-
   end
-
 end
-

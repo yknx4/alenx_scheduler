@@ -10,7 +10,7 @@
 
 namespace :db do
   desc 'Also create shared_extensions Schema'
-  task :extensions => :environment  do
+  task extensions: :environment do
     # Create Schema
     ActiveRecord::Base.connection.execute 'CREATE SCHEMA IF NOT EXISTS shared_extensions;'
     # Enable Hstore
@@ -20,10 +20,10 @@ namespace :db do
   end
 end
 
-Rake::Task["db:create"].enhance do
-  Rake::Task["db:extensions"].invoke
+Rake::Task['db:create'].enhance do
+  Rake::Task['db:extensions'].invoke
 end
 
-Rake::Task["db:test:purge"].enhance do
-  Rake::Task["db:extensions"].invoke
+Rake::Task['db:test:purge'].enhance do
+  Rake::Task['db:extensions'].invoke
 end
