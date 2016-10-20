@@ -34,8 +34,7 @@ class User < ApplicationRecord
   validates :subdomain, presence: { if: :subdomain_required? }
   validates :role, presence: { if: :new_record? }
   validates_absence_of :services, unless: :provider?
-  validate :tenant_is_not_taken
-  validate :tenant_is_active, unless: :admin?
+  validates_with UserValidator
 
   def admin?
     role == 'admin'
@@ -59,13 +58,20 @@ class User < ApplicationRecord
   end
 
   def setup_tenant
-    if (role == 'admin') && errors[:tenant].empty?
-      self.tenant = Tenant.create! subdomain: subdomain
+    return unless errors[:tenant].empty?
+    if admin?
+      setup_tenant = Tenant.create! subdomain: subdomain
       Apartment::Tenant.switch!(subdomain)
     else
-      self.tenant = Tenant.find_by subdomain: subdomain
+      setup_tenant = Tenant.find_by subdomain: subdomain
     end
 
+    self.tenant = setup_tenant
+
+    set_test_host
+  end
+
+  def set_test_host
     Rails.application.routes.default_url_options[:host] = subdomain + '.example.com' if Rails.env.test?
   end
 
@@ -109,19 +115,5 @@ class User < ApplicationRecord
 
   def require_setup_tenant?
     subdomain.present? && (self.tenant.blank? || errors.present?)
-  end
-
-  def tenant_is_not_taken
-    return unless admin?
-    errors.add :tenant, 'already exists.' if subdomain_taken? && tenant.blank?
-  end
-
-  def subdomain_taken?
-    Tenant.where(subdomain: subdomain).exists?
-  end
-
-  def tenant_is_active
-    return if errors[:tenant].present? or Apartment::Tenant.current == subdomain
-    errors.add :tenant, 'has to be active'
   end
 end
