@@ -2,9 +2,35 @@ require 'rails_helper'
 
 RSpec.describe AppointmentService, type: :feature do
   include_context 'default_tenant'
-  
+
   let(:user) { create(:user) }
   let(:provider) { create(:provider) }
+
+  describe '#available_slots' do
+    let(:provider2) { create(:provider) }
+
+    before do
+      full_schedule = Schedule.create hours: full_biz_hours
+
+      organization = tenant.organization
+      organization_schedule = full_schedule
+      organization.schedule = organization_schedule
+      organization.save
+
+      provider.schedule = full_schedule
+      provider.save
+
+      provider2.schedule = full_schedule
+      provider2.save
+    end
+
+    it 'should show all day as slot for each provider' do
+      a_service = AppointmentService.new user: user
+      slots = a_service.available_slots(Time.now.utc.beginning_of_day, Time.now.utc.end_of_day)
+      expect(slots.all?{|id, lapse| lapse.first.start_time == Time.now.utc.beginning_of_day and lapse.first.end_time == Time.now.utc.end_of_day }).to be_truthy
+      expect(slots.count).to eq User.providers.count
+    end
+  end
 
   describe '#make_appointment' do
     let(:a_service) { AppointmentService.new user: user, provider: provider }

@@ -1,4 +1,5 @@
 class AppointmentService < BaseAppointmentService
+  include BizHelper
 
   # start_time, end_time, provider, client
   def make_appointment(start_time, end_time)
@@ -8,10 +9,10 @@ class AppointmentService < BaseAppointmentService
 
   def available_slots(start_time, end_time)
     providers = User.providers
-    tenant_schedule = Tenant.current.organization.schedule.biz
+    tenant_biz = Tenant.current.organization.schedule.biz
 
     if provider.present?
-      providers = providers.where(provider_id: provider.id)
+      providers = providers.where(id: provider.id)
     end
 
     if services.present?
@@ -24,27 +25,25 @@ class AppointmentService < BaseAppointmentService
       hash
     end
 
-    slots = {}
-
-    providers.each do |provider|
-      final_schedule = provider.schedule.biz & tenant_schedule
+    providers.inject({}) do |hash, provider|
+      provider_biz = provider.schedule.biz
       provider_appointments = appointments[provider.id] || []
 
-      provider_appointments.each do |provider_appointment|
+      breaks = provider_appointments.inject({}) do |breaks, provider_appointment|
         start_time = provider_appointment[0]
         end_time = provider_appointment[1]
         start_date = start_time.to_date
-        end_date = end_time.to_date
-        if start_date == end_date
-          current_break = final_schedule.breaks
-        else
-
-        end
+        breaks[start_date] ||= {}
+        breaks[start_date][start_time.to_s(:time)] = end_time.to_s(:time)
+        breaks
       end
 
+      breaks_biz = biz_with_only_breaks(breaks)
+      full_biz = tenant_biz & provider_biz & breaks_biz
+
+      hash[provider.id] = full_biz.periods.after(start_time).timeline.until(end_time).to_a
+      hash
     end
-
-
   end
 
   def get_appointments(start_time=nil, end_time=nil)
