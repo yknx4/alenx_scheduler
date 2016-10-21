@@ -1,0 +1,1 @@
+rubocop -c .rubocop.yml --force-exclusion `git diff --name-only --staged`
