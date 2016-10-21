@@ -34,6 +34,8 @@ AllCops:
     - 'db/migrate/*.rb'
     - 'config/routes.rb'
     - 'bin/*'
+    - '.overcommit.yml'
+    - '.rubocop.yml'
 
 Documentation:
   Enabled: false
