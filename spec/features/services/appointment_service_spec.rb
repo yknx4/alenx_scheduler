@@ -1,38 +1,50 @@
 require 'rails_helper'
 
 RSpec.describe AppointmentService, type: :feature do
+  include AppointmentServiceHelper
+  include ScheduleHelper
   include_context 'default_tenant'
 
   let(:user) { create(:user) }
   let(:provider) { create(:provider) }
+  let(:service) { create(:service) }
 
   describe '#available_slots' do
     let(:provider2) { create(:provider) }
 
-    before do
-      full_schedule = Schedule.create! hours: full_biz_hours
+    context 'with full schedule' do
+      before do
+        setup_full_schedule tenant.organization
+        setup_full_schedule provider
+        setup_full_schedule provider2
+      end
 
-      organization = tenant.organization
-      organization_schedule = full_schedule
-      organization.schedule = organization_schedule
-      organization.save!
+      context 'without provider' do
+        it 'should show all day as slot for each provider' do
+          slots = get_available_slots user: user
+          expect(slots.all? { |_id, lapse| is_full_day_lapse? lapse.first }).to be_truthy
+          expect(slots.count).to eq User.providers.count
+        end
 
-      provider.schedule = full_schedule
-      provider.save!
+        it 'should show all day as slot for each provider with a service' do
+          provider.services << service
+          provider2.services << create(:service)
+          slots = get_available_slots user: user, services: [service.id]
+          expect(slots[provider2.id]).to_not be_present
+          expect(slots[provider.id]).to be_present
+          expect(is_full_day_lapse?(slots[provider.id].first)).to be_truthy
+          expect(slots.count).to eq 1
+        end
+      end
 
-      provider2.schedule = full_schedule
-      provider2.save
-    end
-
-    it 'should show all day as slot for each provider' do
-      a_service = AppointmentService.new user: user
-      slots = a_service.available_slots(Time.current.utc.beginning_of_day, Time.current.utc.end_of_day)
-      expect(slots.all? do |_id, lapse|
-        first_lapse = lapse.first
-        current = Time.current.utc
-        (first_lapse.start_time == current.beginning_of_day) and (first_lapse.end_time == current.end_of_day)
-      end).to be_truthy
-      expect(slots.count).to eq User.providers.count
+      context 'with provider' do
+        it 'should show all day as slot for provider' do
+          slots = get_available_slots user: user, provider: provider
+          expect(slots[provider.id]).to be_present
+          expect(is_full_day_lapse?(slots[provider.id].first)).to be_truthy
+          expect(slots.count).to eq 1
+        end
+      end
     end
   end
 
