@@ -34,7 +34,7 @@
 PreCommit:
   RuboCop:
     enabled: true
-    command: ['bundle', 'exec', 'rubocop'] # Invoke within Bundler context
+    command: ["./run_rubocop.sh"]
     on_warn: 'fail'
 
   EsLint:
