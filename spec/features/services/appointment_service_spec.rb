@@ -76,12 +76,12 @@ RSpec.describe AppointmentService, type: :feature do
 
     it 'should not create an appointment with missing user' do
       a_service = AppointmentService.new provider: provider
-      expect { a_service.make_appointment Time.current, 15.minutes.from_now }.to raise_error TypeError
+      expect { a_service.make_appointment Time.current, 15.minutes.from_now }.to raise_error ActiveRecord::RecordInvalid
     end
 
     it 'should not create an appointment with missing provider' do
       a_service = AppointmentService.new user: user
-      expect { a_service.make_appointment Time.current, 15.minutes.from_now }.to raise_error TypeError
+      expect { a_service.make_appointment Time.current, 15.minutes.from_now }.to raise_error ActiveRecord::RecordInvalid
     end
 
     it 'should raise errors if new appointment is not valid' do
