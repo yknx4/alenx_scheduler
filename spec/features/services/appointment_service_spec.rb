@@ -26,7 +26,7 @@ RSpec.describe AppointmentService, type: :feature do
           expect(slots.count).to eq User.providers.count
         end
 
-        it 'should show all day as slot for each provider with a service' do
+        it 'should show all day as slot for each provider with the service' do
           provider.services << service
           provider2.services << create(:service)
           slots = get_available_slots user: user, services: [service.id]
@@ -34,6 +34,13 @@ RSpec.describe AppointmentService, type: :feature do
           expect(slots[provider.id]).to be_present
           expect(is_full_day_lapse?(slots[provider.id].first)).to be_truthy
           expect(slots.count).to eq 1
+        end
+
+        it 'should show nothing if any provider has the service' do
+          slots = get_available_slots user: user, services: [service.id]
+          expect(slots[provider2.id]).to_not be_present
+          expect(slots[provider2.id]).to_not be_present
+          expect(slots.count).to eq 0
         end
       end
 
@@ -44,6 +51,16 @@ RSpec.describe AppointmentService, type: :feature do
           expect(is_full_day_lapse?(slots[provider.id].first)).to be_truthy
           expect(slots.count).to eq 1
         end
+
+        it 'should show nothing if provider doesnt have the service' do
+          provider.services << create(:service)
+          provider2.services << service
+          slots = get_available_slots provider: provider, services: [service.id]
+          expect(slots[provider2.id]).to_not be_present
+          expect(slots[provider.id]).to_not be_present
+          expect(slots.count).to eq 0
+        end
+
       end
     end
   end
