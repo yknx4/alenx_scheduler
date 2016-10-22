@@ -59,9 +59,10 @@ RSpec.describe AppointmentService, type: :feature do
       end
 
       context 'with provider' do
-        it 'should show all day as slot for provider' do
+        it 'should show all day as slot only for provider' do
           slots = get_available_slots user: user, provider: provider
           expect(slots[provider.id]).to_not be_nil
+          expect(slots[provider2.id]).to be_nil
           expect(is_full_day_lapse?(slots[provider.id].first)).to be_truthy
           expect(slots.count).to eq 1
         end
@@ -133,7 +134,7 @@ RSpec.describe AppointmentService, type: :feature do
       let(:appointment_service) { AppointmentService.new user: user }
 
       it 'should get all users appointments' do
-        expect(appointment_service.get_appointments).to match_array Appointment.where(userid: user.id).to_a
+        expect(appointment_service.get_appointments).to match_array Appointment.where(user_id: user.id).to_a
       end
     end
 
@@ -141,7 +142,7 @@ RSpec.describe AppointmentService, type: :feature do
       let(:appointment_service) { AppointmentService.new provider: provider }
 
       it 'should get all provider appointments' do
-        expect(appointment_service.get_appointments).to match_array Appointment.where(providerid: provider.id).to_a
+        expect(appointment_service.get_appointments).to match_array Appointment.where(provider_id: provider.id).to_a
       end
     end
 
@@ -149,7 +150,7 @@ RSpec.describe AppointmentService, type: :feature do
       let(:appointment_service) { AppointmentService.new user: user, provider: provider }
 
       it 'should get all providers user appointments' do
-        expected_appointments = Appointment.where(providerid: provider.id, userid: user.id).to_a
+        expected_appointments = Appointment.where(provider_id: provider.id, user_id: user.id).to_a
         expect(appointment_service.get_appointments).to match_array expected_appointments
       end
     end
