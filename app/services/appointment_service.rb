@@ -8,6 +8,14 @@ class AppointmentService < BaseAppointmentService
   end
 
   def available_slots(start_time, end_time)
+    available_schedules.each_with_object({}) do |schedule, hash|
+      id = schedule[0]
+      biz = schedule[1]
+      hash[id] = periods_between biz, start_time, end_time
+    end
+  end
+
+  def available_schedules
     available_slots_providers.each_with_object({}) do |provider, hash|
       breaks = appointments_as_breaks providers_appointment_dates(provider.id)
 
@@ -15,7 +23,7 @@ class AppointmentService < BaseAppointmentService
       breaks_biz = biz_with_only_breaks(breaks)
       full_biz = tenant_biz & provider_biz & breaks_biz
 
-      hash[provider.id] = periods_between full_biz, start_time, end_time
+      hash[provider.id] = full_biz
       hash
     end
   end
@@ -70,8 +78,8 @@ class AppointmentService < BaseAppointmentService
 
   def appointments_as_breaks(appointments)
     appointments.each_with_object({}) do |appointment, breaks|
-      start_time = appointment[0]
-      end_time = appointment[1]
+      start_time = appointment[0] - 1.minute
+      end_time = appointment[1] + 1.minute
       start_date = start_time.to_date
       breaks[start_date] ||= {}
       breaks[start_date][start_time.to_s(:time)] = end_time.to_s(:time)

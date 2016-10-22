@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe AppointmentService, type: :feature do
   include AppointmentServiceHelper
   include ScheduleHelper
+  include AppointmentHelper
   include_context 'default_tenant'
 
   let(:user) { create(:user) }
@@ -21,7 +22,7 @@ RSpec.describe AppointmentService, type: :feature do
 
       context 'without provider' do
         it 'should show all day as slot for each provider' do
-          slots = get_available_slots user: user
+          slots = get_available_slots
           expect(slots.all? { |_id, lapse| is_full_day_lapse? lapse.first }).to be_truthy
           expect(slots.count).to eq User.providers.count
         end
@@ -29,25 +30,38 @@ RSpec.describe AppointmentService, type: :feature do
         it 'should show all day as slot for each provider with the service' do
           provider.services << service
           provider2.services << create(:service)
-          slots = get_available_slots user: user, services: [service.id]
-          expect(slots[provider2.id]).to_not be_present
-          expect(slots[provider.id]).to be_present
+          slots = get_available_slots services: [service.id]
+          expect(slots[provider2.id]).to be_nil
+          expect(slots[provider.id]).to_not be_nil
           expect(is_full_day_lapse?(slots[provider.id].first)).to be_truthy
           expect(slots.count).to eq 1
         end
 
         it 'should show nothing if any provider has the service' do
-          slots = get_available_slots user: user, services: [service.id]
-          expect(slots[provider2.id]).to_not be_present
-          expect(slots[provider2.id]).to_not be_present
+          slots = get_available_slots services: [service.id]
+          expect(slots[provider2.id]).to be_nil
+          expect(slots[provider2.id]).to be_nil
           expect(slots.count).to eq 0
+        end
+
+        it 'should not have another appointments time as slot' do
+          appointments = random_appointments
+
+          slots = get_available_slots
+
+          expect(slots.count).to eq User.providers.count
+          appointments.each do |c_appointment|
+            c_provider = c_appointment.provider
+            expect(slots[c_provider.id]).to_not be_nil
+            expect(segments_includes_appointment?(c_appointment, *slots[c_provider.id])).to be_falsey
+          end
         end
       end
 
       context 'with provider' do
         it 'should show all day as slot for provider' do
           slots = get_available_slots user: user, provider: provider
-          expect(slots[provider.id]).to be_present
+          expect(slots[provider.id]).to_not be_nil
           expect(is_full_day_lapse?(slots[provider.id].first)).to be_truthy
           expect(slots.count).to eq 1
         end
@@ -56,11 +70,10 @@ RSpec.describe AppointmentService, type: :feature do
           provider.services << create(:service)
           provider2.services << service
           slots = get_available_slots provider: provider, services: [service.id]
-          expect(slots[provider2.id]).to_not be_present
-          expect(slots[provider.id]).to_not be_present
+          expect(slots[provider2.id]).to be_nil
+          expect(slots[provider.id]).to be_nil
           expect(slots.count).to eq 0
         end
-
       end
     end
   end
@@ -69,7 +82,7 @@ RSpec.describe AppointmentService, type: :feature do
     let(:a_service) { AppointmentService.new user: user, provider: provider }
 
     it 'should create an appointment with proper options' do
-      appointment = a_service.make_appointment Time.current, 15.minutes.from_now
+      appointment = a_service.make_appointment Time.current.middle_of_day, Time.current.middle_of_day + 15.minutes
       expect(appointment).to be_a Appointment
       expect(Appointment.count).to eq 1
     end
@@ -120,7 +133,7 @@ RSpec.describe AppointmentService, type: :feature do
       let(:appointment_service) { AppointmentService.new user: user }
 
       it 'should get all users appointments' do
-        expect(appointment_service.get_appointments).to match_array Appointment.where(user_id: user.id).to_a
+        expect(appointment_service.get_appointments).to match_array Appointment.where(userid: user.id).to_a
       end
     end
 
@@ -128,7 +141,7 @@ RSpec.describe AppointmentService, type: :feature do
       let(:appointment_service) { AppointmentService.new provider: provider }
 
       it 'should get all provider appointments' do
-        expect(appointment_service.get_appointments).to match_array Appointment.where(provider_id: provider.id).to_a
+        expect(appointment_service.get_appointments).to match_array Appointment.where(providerid: provider.id).to_a
       end
     end
 
@@ -136,7 +149,7 @@ RSpec.describe AppointmentService, type: :feature do
       let(:appointment_service) { AppointmentService.new user: user, provider: provider }
 
       it 'should get all providers user appointments' do
-        expected_appointments = Appointment.where(provider_id: provider.id, user_id: user.id).to_a
+        expected_appointments = Appointment.where(providerid: provider.id, userid: user.id).to_a
         expect(appointment_service.get_appointments).to match_array expected_appointments
       end
     end

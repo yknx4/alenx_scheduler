@@ -12,4 +12,8 @@ module ScheduleHelper
     current = Time.current.utc
     (lapse.start_time == current.beginning_of_day) and (lapse.end_time == current.end_of_day)
   end
+
+  def segments_includes_appointment?(appointment, *segments)
+    segments.any? { |s| s.contains? appointment.start_time or s.contains? appointment.end_time }
+  end
 end
