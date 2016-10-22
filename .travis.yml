@@ -9,3 +9,8 @@ notifications:
 addons:
     code_climate:
         repo_token: 8702475d3bf6c46a327e4fb6bcde8dd48c1cb3060a91e12a49bfd6bfc78501c5
+services:
+  - postgresql
+before_script:
+  - psql -c 'create database travis_ci_test;' -U postgres
+  - cp config/database.yml.travis config/database.yml
