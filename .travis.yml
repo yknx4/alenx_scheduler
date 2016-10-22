@@ -1,3 +1,20 @@
 language: ruby
 rvm:
   - 2.3.1
+notifications:
+  slack: magmalabs:H2sI6u1VeNj7D82seTOI0tqA
+notifications:
+  email:
+    - yknx.4.b+scheduler@gmail.com
+addons:
+    code_climate:
+        repo_token: 8702475d3bf6c46a327e4fb6bcde8dd48c1cb3060a91e12a49bfd6bfc78501c5
+services:
+  - postgresql
+before_script:
+  - RAILS_ENV=test bundle exec rake db:create
+script:
+  - RAILS_ENV=test bundle exec rake db:migrate --trace
+  - bundle exec rake
+addons:
+  postgresql: "9.4"
