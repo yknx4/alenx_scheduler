@@ -1,3 +1,8 @@
 language: ruby
 rvm:
   - 2.3.1
+notifications:
+  slack: magmalabs:H2sI6u1VeNj7D82seTOI0tqA
+notifications:
+  email:
+    - yknx.4.b+scheduler@gmail.com
