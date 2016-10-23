@@ -2,8 +2,13 @@ require 'rails_helper'
 
 RSpec.describe Appointment, type: :model do
   include_context 'default_tenant'
+  include ScheduleHelper
 
   describe '#valid' do
+    before do
+      setup_full_schedule tenant.organization
+    end
+
     it 'should be invalid without a provider' do
       a = build(:appointment, provider: nil)
       expect(a).to be_invalid
@@ -43,6 +48,25 @@ RSpec.describe Appointment, type: :model do
       a = build(:appointment, start_time: Time.current, end_time: 1.day.from_now)
       expect(a).to be_valid
       expect(a.errors[:start_time]).to be_empty
+    end
+
+    it 'should be invalid when start_time is outside of organization biz' do
+      randomize_schedule tenant.organization
+      dates = schedule_dates tenant.organization.schedule
+      start_time = dates.keys.sample - 1.minute
+      appointment = build(:appointment, start_time: start_time, end_time: start_time + 15.minutes)
+      expect(appointment).to be_invalid
+      expect(appointment.errors[:start_time]).to be_present
+    end
+
+    it 'should be invalid when end_time is outside of organization biz' do
+      randomize_schedule tenant.organization
+      dates = schedule_dates tenant.organization.schedule
+      end_time = dates.values.sample + 1.minute
+      appointment = build(:appointment, start_time: end_time - 15.minutes, end_time: end_time)
+
+      expect(appointment).to be_invalid
+      expect(appointment.errors[:end_time]).to be_present
     end
   end
 end

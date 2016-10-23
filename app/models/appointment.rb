@@ -2,6 +2,7 @@ class Appointment < ApplicationRecord
   validates :user, :provider, :start_time, :end_time, presence: true
   validate :start_date_cannot_be_later_than_end_time
   validate :should_not_overlap
+  validate :in_tenant_range
 
   belongs_to :provider, class_name: 'User'
   belongs_to :user
@@ -11,6 +12,12 @@ class Appointment < ApplicationRecord
   end
 
   private
+
+  def in_tenant_range
+    biz = Tenant.current.organization.schedule.biz
+    errors.add(:start_time, 'is outside organization schedule') unless biz.in_hours? start_time
+    errors.add(:end_time, 'is outside organization schedule') unless biz.in_hours? end_time
+  end
 
   def should_not_overlap
     return unless errors.blank?
