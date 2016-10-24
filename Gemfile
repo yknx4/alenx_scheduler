@@ -53,6 +53,7 @@ gem 'bourbon', '~> 5.0.0.beta.5'
 gem 'biz', '~> 1.6.0'
 
 gem 'codeclimate-test-reporter', group: :test, require: nil
+gem 'rollbar', '~> 2.13.3'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
