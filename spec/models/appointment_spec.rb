@@ -52,8 +52,8 @@ RSpec.describe Appointment, type: :model do
 
     it 'should be invalid when start_time is outside of organization biz' do
       randomize_schedule tenant.organization
-      dates = schedule_dates tenant.organization.schedule
-      start_time = dates.keys.sample - 1.minute
+      dates = schedule_dates tenant.schedule
+      start_time = dates.keys.sample - 10.minutes
       appointment = build(:appointment, start_time: start_time, end_time: start_time + 15.minutes)
       expect(appointment).to be_invalid
       expect(appointment.errors[:start_time]).to be_present
@@ -61,7 +61,7 @@ RSpec.describe Appointment, type: :model do
 
     it 'should be invalid when end_time is outside of organization biz' do
       randomize_schedule tenant.organization
-      dates = schedule_dates tenant.organization.schedule
+      dates = schedule_dates tenant.schedule
       end_time = dates.values.sample + 1.minute
       appointment = build(:appointment, start_time: end_time - 15.minutes, end_time: end_time)
 

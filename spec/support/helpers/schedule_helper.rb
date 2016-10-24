@@ -39,7 +39,7 @@ module ScheduleHelper
   end
 
   def date_with_time(date, time)
-    Time.zone = 'UTC'
+    Time.zone = Tenant.current.organization.schedule.timezone || 'UTC'
     time = Time.zone.parse(time) if time.is_a? String
     date_in_datetime time, date
   end
