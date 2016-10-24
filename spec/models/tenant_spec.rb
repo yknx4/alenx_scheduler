@@ -5,7 +5,7 @@ RSpec.describe Tenant, type: :model do
     it 'should be invalid without subdomain' do
       tenant = create(:tenant)
       tenant.subdomain = nil
-      expect(tenant.valid?).to be_falsey
+      expect(tenant).to be_invalid
     end
   end
 
@@ -14,7 +14,7 @@ RSpec.describe Tenant, type: :model do
       tenant = create(:tenant)
       tenant.switch!
       expect(Organization.count).to eq 1
-      expect(tenant.organization.present?).to be_truthy
+      expect(tenant.organization).to be_present
     end
   end
 end

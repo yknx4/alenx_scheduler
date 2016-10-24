@@ -8,17 +8,17 @@ RSpec.describe UserService, type: :model do
 
     it 'should be invalid if user and service are duplicated' do
       us = UserService.new user: user_service.user, service: user_service.service
-      expect(us.valid?).to be_falsey
+      expect(us).to be_invalid
     end
 
     it 'should be invalid if user is blank' do
       us = build(:user_service, user: nil)
-      expect(us.valid?).to be_falsey
+      expect(us).to be_invalid
     end
 
     it 'should be invalid if service is blank' do
       us = build(:user_service, service: nil)
-      expect(us.valid?).to be_falsey
+      expect(us).to be_invalid
     end
   end
 end

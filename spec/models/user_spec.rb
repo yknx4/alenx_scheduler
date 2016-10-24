@@ -6,7 +6,7 @@ RSpec.describe User, type: :model do
   describe '#roles' do
     it 'should have user role by default' do
       user = create(:user)
-      expect(user.has_role?(:user)).to be_truthy
+      expect(user).to have_role :user
     end
   end
 
@@ -25,14 +25,14 @@ RSpec.describe User, type: :model do
   describe '#valid' do
     it 'should be invalid without a subdomain nor tenant when it is a new record' do
       u = build(:user, tenant: nil)
-      expect(u.valid?).to be_falsey
+      expect(u).to be_invalid
       expect(u.errors.details.as_json).to eq 'subdomain' => [{ 'error' => 'blank' }],
                                              'tenant' => [{ 'error' => 'blank' }]
     end
 
     it 'should be invalid if the new user is an admin and the tenant already exists' do
       u = build(:admin, tenant: nil, subdomain: tenant.subdomain)
-      expect(u.valid?).to be_falsey
+      expect(u).to be_invalid
       expect(u.errors.messages).to eq tenant: ['already exists.']
     end
 
@@ -40,20 +40,20 @@ RSpec.describe User, type: :model do
       it 'should be invalid with services' do
         u = build(:user)
         u.services << build(:service)
-        expect(u.valid?).to be_falsey
-        expect(u.errors[:services].present?).to be_truthy
+        expect(u).to be_invalid
+        expect(u.errors[:services]).to be_present
       end
     end
 
     context 'as provider' do
       it 'should be valid with services' do
         u = build(:stuffed_provider)
-        expect(u.valid?).to be_truthy
+        expect(u).to be_valid
       end
 
       it 'should be invalid without a schedule' do
         u = build(:provider, schedule: nil)
-        expect(u.valid?).to be_falsey
+        expect(u).to be_invalid
       end
     end
   end
@@ -64,7 +64,7 @@ RSpec.describe User, type: :model do
         u = build(:user)
         u.role = 'provider'
         u.save!
-        expect(u.schedule.present?).to be_truthy
+        expect(u.schedule).to be_present
       end
     end
 
@@ -81,12 +81,12 @@ RSpec.describe User, type: :model do
 
     it 'should be admin when role admin is added' do
       u = create(:admin, subdomain: 'new')
-      expect(u.admin?).to be_truthy
+      expect(u).to be_admin
     end
 
     it 'should be admin when role is set as admin' do
       u = build(:admin)
-      expect(u.admin?).to be_truthy
+      expect(u).to be_admin
     end
   end
 
@@ -94,8 +94,8 @@ RSpec.describe User, type: :model do
     context 'as provider' do
       it 'should have an schedule' do
         u = create(:provider)
-        expect(u.schedule.present?).to be_truthy
-        expect(u.schedule.persisted?).to be_truthy
+        expect(u.schedule).to be_present
+        expect(u.schedule).to be_persisted
       end
     end
   end

@@ -5,7 +5,7 @@ RSpec.describe Service, type: :model do
   describe '#valid' do
     it 'should be invalid when tag already exists' do
       p = Service.new(tag: service.tag)
-      expect(p.valid?).to be_falsey
+      expect(p).to be_invalid
     end
   end
 end
