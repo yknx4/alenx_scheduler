@@ -6,6 +6,7 @@ class Tenant < ApplicationRecord
 
   has_many :users
   has_one :organization
+  has_one :schedule, through: :organization
 
   def around_tenant
     current = Tenant.current_tenant
