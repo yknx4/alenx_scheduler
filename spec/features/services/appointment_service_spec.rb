@@ -80,6 +80,10 @@ RSpec.describe AppointmentService, type: :feature do
   end
 
   describe '#make_appointment' do
+    before do
+      setup_full_schedule tenant.organization
+    end
+
     let(:a_service) { AppointmentService.new user: user, provider: provider }
 
     it 'should create an appointment with proper options' do
@@ -104,6 +108,10 @@ RSpec.describe AppointmentService, type: :feature do
   end
 
   describe '#get_appointments' do
+    before do
+      setup_full_schedule tenant.organization
+    end
+    
     let(:provider2) { create(:provider) }
     let(:appointments) do
       [
