@@ -10,7 +10,7 @@ module ScheduleHelper
 
   def randomize_schedule(element)
     element.schedule = create(:schedule)
-    element.save
+    element.save!
   end
 
   def is_full_day_lapse?(lapse)
