@@ -49,7 +49,7 @@ RSpec.describe AppointmentService, type: :feature do
 
           slots = get_available_slots
 
-          expect(slots.count).to eq User.providers.count
+          expect(slots.count).to be <= User.providers.count
           appointments.each do |c_appointment|
             c_provider = c_appointment.provider
             expect(slots[c_provider.id]).to_not be_nil
