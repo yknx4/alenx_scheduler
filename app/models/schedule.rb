@@ -16,5 +16,7 @@ class Schedule < ApplicationRecord
       thu: { '09:00' => '15:00' },
       fri: { '09:00' => '15:00' }
     }
+
+    self.timezone ||= Time.zone.tzinfo.name
   end
 end
