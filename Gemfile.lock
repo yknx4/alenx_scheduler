@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/yknx4/administrate.git
+  remote: https://github.com/yknx4/administrate
   revision: b3144292ce2911d56d7960cbe249f6318a8afa07
   branch: rails5
   specs:
