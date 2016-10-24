@@ -5,6 +5,7 @@ RSpec.describe Appointment, type: :model do
   include ScheduleHelper
 
   describe '#valid' do
+    let(:provider) { create(:provider) }
     before do
       setup_full_schedule tenant.organization
     end
@@ -64,6 +65,25 @@ RSpec.describe Appointment, type: :model do
       dates = schedule_dates tenant.schedule
       end_time = dates.values.sample + 1.minute
       appointment = build(:appointment, start_time: end_time - 15.minutes, end_time: end_time)
+
+      expect(appointment).to be_invalid
+      expect(appointment.errors[:end_time]).to be_present
+    end
+
+    it 'should be invalid when start_time is outside of provider biz' do
+      randomize_schedule provider
+      dates = schedule_dates provider.schedule
+      start_time = dates.keys.sample - 10.minutes
+      appointment = build(:appointment, start_time: start_time, end_time: start_time + 15.minutes, provider: provider)
+      expect(appointment).to be_invalid
+      expect(appointment.errors[:start_time]).to be_present
+    end
+
+    it 'should be invalid when end_time is outside of provider biz' do
+      randomize_schedule provider
+      dates = schedule_dates provider.schedule
+      end_time = dates.values.sample + 1.minute
+      appointment = build(:appointment, start_time: end_time - 15.minutes, end_time: end_time, provider: provider)
 
       expect(appointment).to be_invalid
       expect(appointment.errors[:end_time]).to be_present
