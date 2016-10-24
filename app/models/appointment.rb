@@ -1,7 +1,6 @@
 class Appointment < ApplicationRecord
   validates :user, :provider, :start_time, :end_time, presence: true
   validate :start_date_cannot_be_later_than_end_time
-  validate :should_be_on_same_day
   validate :should_not_overlap
 
   belongs_to :provider, class_name: 'User'
@@ -12,11 +11,6 @@ class Appointment < ApplicationRecord
   end
 
   private
-
-  def should_be_on_same_day
-    return if start_time and end_time and start_time.to_date == end_time.to_date
-    errors.add :start_time, 'should be same date as end_time'
-  end
 
   def should_not_overlap
     return unless errors.blank?

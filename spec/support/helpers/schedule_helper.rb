@@ -9,7 +9,7 @@ module ScheduleHelper
   end
 
   def is_full_day_lapse?(lapse)
-    current = Time.current.utc
+    current = Time.current
     (lapse.start_time == current.beginning_of_day) and (lapse.end_time == current.end_of_day)
   end
 

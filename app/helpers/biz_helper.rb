@@ -1,5 +1,6 @@
 module BizHelper
-  def biz_with_only_breaks(breaks, timezone = 'Etc/UTC')
+  def biz_with_only_breaks(breaks, timezone = nil)
+    timezone ||= Time.zone.tzinfo.name
     Biz::Schedule.new do |config|
       config.hours = full_biz_hours
 
