@@ -4,14 +4,14 @@ RSpec.describe Organization, type: :model do
   describe '#valid' do
     it 'should be invalid without a schedule' do
       o = build(:organization, schedule: nil)
-      expect(o.valid?).to be_falsey
-      expect(o.errors[:schedule].empty?).to be_falsey
+      expect(o).to be_invalid
+      expect(o.errors[:schedule]).to_not be_empty
     end
   end
   describe '#new' do
     it 'should create a schedule if not present' do
       o = Organization.create! name: 'test'
-      expect(o.schedule.present?).to be_truthy
+      expect(o.schedule).to be_present
     end
   end
 end
