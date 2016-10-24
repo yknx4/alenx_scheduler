@@ -18,13 +18,10 @@ class AppointmentService < BaseAppointmentService
   def available_schedules
     available_slots_providers.each_with_object({}) do |provider, hash|
       breaks = appointments_as_breaks providers_appointment_dates(provider.id)
-
       provider_biz = provider.schedule.biz
       breaks_biz = biz_with_only_breaks(breaks)
-      full_biz = tenant_biz & provider_biz & breaks_biz
-
-      hash[provider.id] = full_biz
-      hash
+      full_biz = merge_biz tenant_biz, provider_biz, breaks_biz
+      hash[provider.id] = full_biz if full_biz.present?
     end
   end
 

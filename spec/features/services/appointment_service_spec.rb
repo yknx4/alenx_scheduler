@@ -111,7 +111,7 @@ RSpec.describe AppointmentService, type: :feature do
     before do
       setup_full_schedule tenant.organization
     end
-    
+
     let(:provider2) { create(:provider) }
     let(:appointments) do
       [

@@ -27,4 +27,10 @@ module BizHelper
   def periods_between(biz, start_time, end_time)
     biz.periods.after(start_time).timeline.until(end_time).to_a
   end
+
+  def merge_biz(*biz)
+    biz.reduce(&:&)
+  rescue
+    nil
+  end
 end
