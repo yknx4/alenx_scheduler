@@ -10,7 +10,7 @@ FactoryGirl.define do
   factory :appointment do
     start_time
     end_time
-    provider
+    association :provider, factory: :provider_with_full_schedule
     user
   end
 end

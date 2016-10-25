@@ -19,4 +19,8 @@ FactoryGirl.define do
   factory :stuffed_provider, parent: :provider do
     services { [create(:service), create(:service), create(:service)] }
   end
+
+  factory :provider_with_full_schedule, parent: :provider do
+    association :schedule, factory: :full_schedule
+  end
 end
