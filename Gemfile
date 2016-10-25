@@ -41,6 +41,7 @@ gem 'pundit', '~> 1.1.0'
 gem 'devise', '~> 4.2.0'
 gem 'rolify', '~> 5.1.0'
 gem 'devise_token_auth', '~> 0.1.39'
+gem 'omniauth-google-oauth2', '~> 0.4.1'
 
 # Admin
 
