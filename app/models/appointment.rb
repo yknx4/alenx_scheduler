@@ -25,7 +25,7 @@ class Appointment < ApplicationRecord
 
   def in_biz_range(element)
     biz = element.schedule.biz
-    message = "is outside #{(element.model_name.element)} schedule"
+    message = "is outside #{element.model_name.element} schedule"
     errors.add(:start_time, message) unless biz.in_hours? start_time
     errors.add(:end_time, message) unless biz.in_hours? end_time
   end
