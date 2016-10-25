@@ -40,7 +40,7 @@ gem 'apartment', '~> 1.2.0'
 gem 'pundit', '~> 1.1.0'
 gem 'devise', '~> 4.2.0'
 gem 'rolify', '~> 5.1.0'
-gem 'simple_token_authentication', '~> 1.0'
+gem 'devise_token_auth', '~> 0.1.39'
 
 # Admin
 
