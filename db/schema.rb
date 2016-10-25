@@ -102,7 +102,7 @@ ActiveRecord::Schema.define(version: 20161025205437) do
     t.integer  "schedule_id"
     t.string   "provider",               default: "email", null: false
     t.string   "uid",                    default: "",      null: false
-    t.json     "tokens"
+    t.jsonb    "tokens"
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
     t.index ["schedule_id"], name: "index_users_on_schedule_id", using: :btree

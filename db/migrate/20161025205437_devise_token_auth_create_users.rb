@@ -6,7 +6,7 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[5.0]
       t.string :uid, :null => false, :default => ""
 
       ## Tokens
-      t.json :tokens
+      t.jsonb :tokens
     end
 
     add_index :users, [:uid, :provider],     :unique => true
