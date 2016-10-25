@@ -1,7 +1,9 @@
 module AppointmentHelper
   def random_appointments(max = 10)
     Array.new(rand(max)) do
-      create(:appointment)
+      appointment = create(:appointment)
+      setup_full_schedule appointment.provider
+      appointment
     end
   end
 

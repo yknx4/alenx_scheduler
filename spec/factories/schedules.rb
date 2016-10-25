@@ -32,4 +32,18 @@ FactoryGirl.define do
       end
     end
   end
+
+  factory :full_schedule, parent: :schedule do
+    hours do
+      {
+        mon: { '00:00' => '24:00' },
+        tue: { '00:00' => '24:00' },
+        wed: { '00:00' => '24:00' },
+        thu: { '00:00' => '24:00' },
+        fri: { '00:00' => '24:00' },
+        sat: { '00:00' => '24:00' },
+        sun: { '00:00' => '24:00' }
+      }
+    end
+  end
 end

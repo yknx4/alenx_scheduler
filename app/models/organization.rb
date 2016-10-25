@@ -6,6 +6,8 @@ class Organization < ApplicationRecord
   validate :only_one_organization
   validates :schedule, presence: true
 
+  delegate :biz, to: :schedule
+
   private
 
   def only_one_organization
