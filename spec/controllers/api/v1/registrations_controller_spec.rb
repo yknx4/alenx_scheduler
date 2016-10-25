@@ -1,7 +1,6 @@
 require 'rails_helper'
-include Rails.application.routes.url_helpers
 
-RSpec.describe Users::RegistrationsController, type: :controller do
+RSpec.describe DeviseTokenAuth::RegistrationsController, type: :controller do
   include_context 'default_tenant'
   include RegistrationsHelper
 
@@ -12,10 +11,11 @@ RSpec.describe Users::RegistrationsController, type: :controller do
 
     context 'with subdomain' do
       it 'should create a user' do
-        params = default_user_params(tenant.subdomain)
+        params = default_api_sign_up_params(tenant.subdomain)
         post :create, params: params
+        body = JSON.parse(response.body)
+        expect(body['status']).to eq 'success'
         expect(User.users.count).to eq 1
-        expect(subject).to redirect_to user_url(User.last, subdomain: tenant.subdomain)
       end
     end
 
@@ -26,13 +26,13 @@ RSpec.describe Users::RegistrationsController, type: :controller do
       end
 
       it 'should create an admin' do
-        params = default_admin_params
+        params = default_api_admin_params
         post :create, params: params
+        body = JSON.parse(response.body)
+        expect(body['status']).to eq 'success'
         expect(User.admins.count).to eq 1
-        expect(Tenant.where(subdomain: params[:user][:subdomain]).exists?).to be_truthy
+        expect(Tenant.where(subdomain: params[:subdomain])).to exist
         expect(Tenant.current).to eq Tenant.last
-        expect(response.location).to eq(new_user_session_url(subdomain: Tenant.last.subdomain))
-        expect(subject).to redirect_to new_user_session_url(subdomain: Tenant.last.subdomain)
       end
     end
   end
