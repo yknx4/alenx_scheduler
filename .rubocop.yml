@@ -49,3 +49,6 @@ Style/AndOr:
 
 Style/Lambda:
   Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
