@@ -1,6 +1,6 @@
 %body
   - content_for(:title) do
-    = display_resource_name(page.resource_name)
+    = display_resource_name(page_number.resource_name)
   - content_for(:search) do
     %form.search
       %span.search__icon
@@ -12,10 +12,10 @@
     %h1#page-title.header__heading= content_for(:title)
     .header__actions
       = link_to_if(                                      |
-          policy_for_resource(page.resource_name).new?,  |
-          "New #{page.resource_name.titleize.downcase}", |
-          [:new, namespace, page.resource_name],         |
+          policy_for_resource(page_number.resource_name).new?,  |
+          "New #{page_number.resource_name.titleize.downcase}", |
+          [:new, namespace, page_number.resource_name],         |
           class: "button",                               |
         )                                                |
-  = render "collection", collection_presenter: page, resources: resources
+  = render "collection", collection_presenter: page_number, resources: resources
   = paginate resources
