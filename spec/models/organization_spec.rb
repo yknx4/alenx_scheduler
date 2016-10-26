@@ -5,7 +5,14 @@ RSpec.describe Organization, type: :model do
     it 'should be invalid without a schedule' do
       o = build(:organization, schedule: nil)
       expect(o).to be_invalid
-      expect(o.errors[:schedule]).to_not be_empty
+      expect(o.errors).to have_key :schedule
+    end
+
+    it 'should be invalid if an organization already exists' do
+      create(:organization)
+      o = build(:organization)
+      expect(o).to be_invalid
+      expect(o.errors).to have_key :base
     end
   end
   describe '#new' do
