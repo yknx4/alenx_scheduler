@@ -37,6 +37,14 @@ RSpec.describe User, type: :model do
       expect(u.errors).to have_key :tenant
     end
 
+    it 'should be invalid if the tenant is not active' do
+      u = build(:user)
+      Apartment::Tenant.reset
+      expect(u).to be_invalid
+      expect(u.errors).to have_key :tenant
+      expect(u.errors[:tenant]).to include 'has to be active'
+    end
+
     context 'as user' do
       it 'should be invalid with services' do
         u = build(:user)
