@@ -14,7 +14,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
       expect(response).to have_http_status(:ok)
       expect(body).to have_key 'data'
-      expect(body['data'].count).to be > 0
+      expect(body['data'].count).to be_positive
       expect(body['data'].count).to be <= User.count
     end
   end
