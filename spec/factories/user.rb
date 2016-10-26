@@ -11,9 +11,15 @@ FactoryGirl.define do
     role  'admin'
   end
 
-  factory :provider, parent: :user do
+  factory :incomplete_provider, parent: :user do
     role 'provider'
-    schedule
+    schedule nil
+  end
+
+  factory :provider, parent: :incomplete_provider do
+    after(:build) do |provider|
+      provider.schedule = provider.tenant.schedule.dup
+    end
   end
 
   factory :stuffed_provider, parent: :provider do
