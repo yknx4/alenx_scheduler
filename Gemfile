@@ -40,7 +40,8 @@ gem 'apartment', '~> 1.2.0'
 gem 'pundit', '~> 1.1.0'
 gem 'devise', '~> 4.2.0'
 gem 'rolify', '~> 5.1.0'
-gem 'simple_token_authentication', '~> 1.0'
+gem 'devise_token_auth', '~> 0.1.39'
+gem 'omniauth-google-oauth2', '~> 0.4.1'
 
 # Admin
 
@@ -56,6 +57,7 @@ gem 'codeclimate-test-reporter', group: :test, require: nil
 gem 'rollbar', '~> 2.13.3'
 
 gem 'jsonapi', '~> 0.1.1.beta6'
+gem 'memoist', '~> 0.15.0'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

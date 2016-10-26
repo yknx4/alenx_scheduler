@@ -1,24 +1,9 @@
 require 'rails_helper'
 include Rails.application.routes.url_helpers
 
-def default_user_params(subdomain = nil)
-  {
-    user: {
-      email: Faker::Internet.email,
-      username: Faker::Internet.user_name,
-      password: 'password',
-      password_confirmation: 'password',
-      subdomain: subdomain
-    }
-  }
-end
-
-def default_admin_params
-  default_user_params(Faker::Internet.domain_word)
-end
-
 RSpec.describe Users::RegistrationsController, type: :controller do
   include_context 'default_tenant'
+  include RegistrationsHelper
 
   describe '#create' do
     before do
