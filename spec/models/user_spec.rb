@@ -26,14 +26,14 @@ RSpec.describe User, type: :model do
     it 'should be invalid without a subdomain nor tenant when it is a new record' do
       u = build(:user, tenant: nil)
       expect(u).to be_invalid
-      expect(u.errors.details.as_json).to eq 'subdomain' => [{ 'error' => 'blank' }],
-                                             'tenant' => [{ 'error' => 'blank' }]
+      expect(u.errors).to have_key :subdomain
+      expect(u.errors).to have_key :tenant
     end
 
     it 'should be invalid if the new user is an admin and the tenant already exists' do
       u = build(:admin, tenant: nil, subdomain: tenant.subdomain)
       expect(u).to be_invalid
-      expect(u.errors.messages).to eq tenant: ['already exists.']
+      expect(u.errors).to have_key :tenant
     end
 
     context 'as user' do
@@ -41,7 +41,7 @@ RSpec.describe User, type: :model do
         u = build(:user)
         u.services << build(:service)
         expect(u).to be_invalid
-        expect(u.errors[:services]).to be_present
+        expect(u.errors).to have_key :services
       end
     end
 
@@ -52,7 +52,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'should be invalid without a schedule' do
-        u = build(:provider, schedule: nil)
+        u = build(:incomplete_provider)
         expect(u).to be_invalid
       end
     end

@@ -39,24 +39,22 @@ module ScheduleHelper
   end
 
   def date_with_time(date, time)
-    Time.zone = Tenant.current.organization.schedule.timezone || 'UTC'
     time = Time.zone.parse(time) if time.is_a? String
-    date_in_datetime time, date
+    replace_date time, date
   end
 
-  def date_in_datetime(datetime, date)
-    datetime.to_datetime.change(year: date.year, month: date.month, day: date.day)
+  def replace_date(datetime, date)
+    datetime.change(year: date.year, month: date.month, day: date.day)
   end
 
   def schedule_dates(schedule)
+    Time.zone = schedule.timezone
     hours = schedule.hours
     hours.each_with_object({}) do |hour, hash|
       date = next_date(hour[0])
       times = hour[1..-1].map(&:to_a).map(&:flatten)
       times.each do |start_end_time|
-        start_time = start_end_time[0]
-        end_time = start_end_time[1]
-        set_hash_dates start_time, end_time, date, hash
+        set_hash_dates(*start_end_time, date, hash)
       end
     end
   end

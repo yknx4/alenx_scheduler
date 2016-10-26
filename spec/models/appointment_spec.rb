@@ -30,7 +30,7 @@ RSpec.describe Appointment, type: :model do
       invalid_appointment = build(:appointment,
                                   provider: appointment.provider,
                                   start_time: appointment.start_time + 5.minutes,
-                                  end_time: appointment.end_time + 1.hour)
+                                  end_time: appointment.end_time + 1.minute)
       expect(invalid_appointment).to be_invalid
       expect(invalid_appointment.errors[:provider]).to be_present
     end
@@ -40,7 +40,7 @@ RSpec.describe Appointment, type: :model do
       invalid_appointment = build(:appointment,
                                   user: appointment.user,
                                   start_time: appointment.start_time + 5.minutes,
-                                  end_time: appointment.end_time + 1.hour)
+                                  end_time: appointment.end_time + 1.minute)
       expect(invalid_appointment).to be_invalid
       expect(invalid_appointment.errors[:user]).to be_present
     end
@@ -54,8 +54,9 @@ RSpec.describe Appointment, type: :model do
     it 'should be invalid when start_time is outside of organization biz' do
       randomize_schedule tenant.organization
       dates = schedule_dates tenant.schedule
-      start_time = dates.keys.sample - 10.minutes
+      start_time = dates.keys.sample - 1.minute
       appointment = build(:appointment, start_time: start_time, end_time: start_time + 15.minutes)
+
       expect(appointment).to be_invalid
       expect(appointment.errors[:start_time]).to be_present
     end
@@ -73,8 +74,9 @@ RSpec.describe Appointment, type: :model do
     it 'should be invalid when start_time is outside of provider biz' do
       randomize_schedule provider
       dates = schedule_dates provider.schedule
-      start_time = dates.keys.sample - 10.minutes
+      start_time = dates.keys.sample - 1.minute
       appointment = build(:appointment, start_time: start_time, end_time: start_time + 15.minutes, provider: provider)
+
       expect(appointment).to be_invalid
       expect(appointment.errors[:start_time]).to be_present
     end
