@@ -7,6 +7,7 @@ RSpec.describe User, type: :model do
     it 'should have user role by default' do
       user = create(:user)
       expect(user).to have_role :user
+      expect(user).to be_user
     end
   end
 
@@ -34,6 +35,14 @@ RSpec.describe User, type: :model do
       u = build(:admin, tenant: nil, subdomain: tenant.subdomain)
       expect(u).to be_invalid
       expect(u.errors).to have_key :tenant
+    end
+
+    it 'should be invalid if the tenant is not active' do
+      u = build(:user)
+      Apartment::Tenant.reset
+      expect(u).to be_invalid
+      expect(u.errors).to have_key :tenant
+      expect(u.errors[:tenant]).to include 'has to be active'
     end
 
     context 'as user' do

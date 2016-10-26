@@ -43,6 +43,10 @@ class User < ApplicationRecord
     role == 'provider'
   end
 
+  def user?
+    role == 'user'
+  end
+
   def appointments
     if provider?
       provider_appointments
