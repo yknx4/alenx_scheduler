@@ -4,11 +4,11 @@ RSpec.describe DeviseTokenAuth::RegistrationsController, type: :controller do
   include_context 'default_tenant'
   include RegistrationsHelper
 
-  describe '#create' do
-    before do
-      @request.env['devise.mapping'] = Devise.mappings[:user]
-    end
+  before do
+    @request.env['devise.mapping'] = Devise.mappings[:user]
+  end
 
+  describe '#create' do
     context 'with subdomain' do
       it 'should create a user' do
         params = default_api_sign_up_params(tenant.subdomain)
