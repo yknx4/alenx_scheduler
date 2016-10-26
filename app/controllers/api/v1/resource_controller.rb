@@ -4,12 +4,18 @@ module Api
       include Pundit
       extend ::Memoist
 
+      rescue_from Pundit::NotAuthorizedError, with: :render_forbidden
+
       before_action :authenticate_user!
       before_action :run_authorization
       after_action :verify_authorized
 
       def index
         render json: resource_collection.page(page_number).per(page_size)
+      end
+
+      def show
+        render json: requested_resource
       end
 
       def self.run_on_model(*actions)
@@ -64,6 +70,12 @@ module Api
         else
           authorize requested_resource
         end
+      end
+
+      def render_forbidden
+        render json: {
+          errors: ['You cannot access this resource.']
+        }, status: 403
       end
     end
   end
