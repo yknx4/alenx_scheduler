@@ -7,6 +7,7 @@ RSpec.describe User, type: :model do
     it 'should have user role by default' do
       user = create(:user)
       expect(user).to have_role :user
+      expect(user).to be_user
     end
   end
 
