@@ -18,6 +18,36 @@ module Api
         render json: requested_resource
       end
 
+      def update
+        if requested_resource.update(permitted_attributes(requested_resource))
+          render json: requested_resource
+        else
+          render json: requested_resource.errors,
+                 status: :unprocessable_entity,
+                 serializer: ActiveModel::Serializer::ErrorSerializer
+        end
+      end
+
+      def create
+        new_resource = resource_class.new permitted_attributes(resource_class)
+        if new_resource.save
+          render json: new_resource, status: :created
+        else
+          render json: new_resource.errors,
+                 status: :unprocessable_entity,
+                 serializer: ActiveModel::Serializer::ErrorSerializer
+        end
+      end
+
+      def destroy
+        if requested_resource.destroy
+          render json: {}, status: :no_content
+        else
+          render json: { errors: [{ status: 422, detail: 'Cannot delete resource' }] },
+                 status: :unprocessable_entity
+        end
+      end
+
       def self.run_on_model(*actions)
         self.model_actions += actions
       end
