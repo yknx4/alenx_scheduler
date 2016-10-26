@@ -57,6 +57,7 @@ gem 'codeclimate-test-reporter', group: :test, require: nil
 gem 'rollbar', '~> 2.13.3'
 
 gem 'jsonapi', '~> 0.1.1.beta6'
+gem 'memoist', '~> 0.15.0'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

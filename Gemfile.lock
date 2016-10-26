@@ -177,6 +177,7 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
+    memoist (0.15.0)
     method_source (0.8.2)
     mime-types (3.1)
       mime-types-data (~> 3.2015)
@@ -381,6 +382,7 @@ DEPENDENCIES
   jquery-rails
   jsonapi (~> 0.1.1.beta6)
   listen (~> 3.0.5)
+  memoist (~> 0.15.0)
   omniauth-google-oauth2 (~> 0.4.1)
   pg (~> 0.18)
   pry-byebug
