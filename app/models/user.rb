@@ -3,6 +3,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :omniauthable
+
+  include UserRelationships
   include DeviseTokenAuth::Concerns::User
   include RequiresSchedule
 
@@ -17,16 +19,6 @@ class User < ApplicationRecord
   after_commit :update_role
 
   rolify
-
-  has_many :users_roles
-  has_many :roles, through: :users_roles
-  has_many :user_services
-  has_many :services, through: :user_services
-  has_many :user_appointments, class_name: 'Appointment', foreign_key: 'user_id'
-  has_many :provider_appointments, class_name: 'Appointment', foreign_key: 'provider_id'
-
-  belongs_to :tenant
-  belongs_to :schedule
 
   validates :schedule, presence: { if: :provider? }
   validates :tenant, presence: { if: :tenant_required? }
@@ -85,6 +77,12 @@ class User < ApplicationRecord
     else
       role_setter 'user'
     end
+  end
+
+  def reload(*params)
+    user = super(*params)
+    role_setter initial_role
+    user
   end
 
   def initial_role
