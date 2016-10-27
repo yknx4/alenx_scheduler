@@ -7,4 +7,8 @@ module UsersControllerHelper
       }
     }
   end
+
+  def update_role_params(id = 0)
+    user_update_params(id).merge(user: { username: 'awesome', role: 'admin' })
+  end
 end

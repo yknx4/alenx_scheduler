@@ -60,6 +60,22 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         expect(response).to have_http_status(:ok)
         expect(user.reload.username).to eq user_update_params[:user][:username]
       end
+
+      it 'should be able to update another user role' do
+        api_authorize_user admin
+        patch :update, params: update_role_params(user.id)
+        expect(response).to have_http_status(:ok)
+        expect(user.reload.role).to eq 'admin'
+      end
+    end
+
+    describe '#create' do
+      it 'should be able to create another user' do
+        api_authorize_user user
+        post :create
+
+        expect_forbidden
+      end
     end
   end
 
@@ -88,6 +104,13 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         patch :update, params: user_update_params(admin.id)
 
         expect_forbidden
+      end
+
+      it 'should not be able to update the user role' do
+        api_authorize_user user
+        patch :update, params: update_role_params(user.id)
+        expect(response).to have_http_status(:ok)
+        expect(user.reload.role).to eq 'user'
       end
     end
   end
