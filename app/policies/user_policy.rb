@@ -14,4 +14,8 @@ class UserPolicy < ApplicationPolicy
   def delete?
     user.admin? || own?
   end
+
+  def permitted_attributes
+    [:email, :username, :password, :password_confirmation]
+  end
 end
