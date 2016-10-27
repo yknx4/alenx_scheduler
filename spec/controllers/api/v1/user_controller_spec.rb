@@ -38,11 +38,14 @@ RSpec.describe Api::V1::UsersController, type: :controller do
   end
 
   context 'as admin' do
+    before do
+      api_authorize_user admin
+    end
+
     describe '#index' do
       it 'should show all users' do
         rand(20).times { create :user }
 
-        api_authorize_user admin
         get :index
 
         expect(response).to have_http_status(:ok)
@@ -54,7 +57,6 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
     describe '#update' do
       it 'should be able to update another user' do
-        api_authorize_user admin
         patch :update, params: user_update_params(user.id)
 
         expect(response).to have_http_status(:ok)
@@ -62,7 +64,6 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       end
 
       it 'should be able to update another user role' do
-        api_authorize_user admin
         patch :update, params: update_role_params(user.id)
         expect(response).to have_http_status(:ok)
         expect(user.reload.role).to eq 'admin'
@@ -71,43 +72,40 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
     describe '#create' do
       it 'should be able to create another user' do
-        api_authorize_user user
-        post :create
-
-        expect_forbidden
+        params = user_create_params
+        post :create, params: params
+        expect(response).to have_http_status(:created)
+        expect(response_object).to have_key 'data'
       end
     end
   end
 
   context 'as user' do
+    before do
+      api_authorize_user user
+    end
+
     describe '#index' do
       it 'should be forbidden' do
-        api_authorize_user user
         get :index
-
         expect_forbidden
       end
     end
 
     describe '#create' do
       it 'should be forbidden' do
-        api_authorize_user user
         post :create
-
         expect_forbidden
       end
     end
 
     describe '#update' do
       it 'should not be able to update another user' do
-        api_authorize_user user
         patch :update, params: user_update_params(admin.id)
-
         expect_forbidden
       end
 
       it 'should not be able to update the user role' do
-        api_authorize_user user
         patch :update, params: update_role_params(user.id)
         expect(response).to have_http_status(:ok)
         expect(user.reload.role).to eq 'user'
