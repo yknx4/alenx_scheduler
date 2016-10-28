@@ -3,8 +3,10 @@ module ApiControllersHelper
     user.create_new_auth_token
   end
 
-  def api_authorize_user(user)
+  def api_authorize_user(*users)
+    user = users.sample
     request.headers.merge! token(user)
+    user
   end
 
   def response_object

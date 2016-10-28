@@ -8,8 +8,8 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
   describe '#show' do
     it 'should show current user' do
-      api_authorize_user admin
-      get :show, params: { id: admin.id }
+      selected_user = api_authorize_user admin, user
+      get :show, params: { id: selected_user.id }
 
       expect(response).to have_http_status(:ok)
       expect(response_object).to have_key 'data'
@@ -17,8 +17,8 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     end
 
     it 'should show another user' do
-      api_authorize_user admin
-      get :show, params: { id: user.id }
+      selected_user = api_authorize_user admin, user
+      get :show, params: { id: selected_user.id }
 
       expect(response).to have_http_status(:ok)
       expect(response_object).to have_key 'data'
@@ -28,8 +28,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
   describe '#update' do
     it 'should be able to update itself' do
-      selected_user = [user, admin].sample
-      api_authorize_user selected_user
+      selected_user = api_authorize_user admin, user
       patch :update, params: user_update_params(selected_user.id)
 
       expect(response).to have_http_status(:ok)
@@ -39,8 +38,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
   describe '#delete' do
     it 'should be able to delete itself' do
-      selected_user = [user, admin].sample
-      api_authorize_user selected_user
+      selected_user = api_authorize_user admin, user
       delete :destroy, params: { id: selected_user.id }
 
       expect(response).to have_http_status(:no_content)
