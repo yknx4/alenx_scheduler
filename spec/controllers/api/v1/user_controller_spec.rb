@@ -54,15 +54,38 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     end
 
     describe '#index' do
-      it 'should show all users' do
-        rand(20).times { create :user }
+      before do
+        50.times { create :user }
+      end
 
+      it 'should show all users' do
         get :index
 
         expect(response).to have_http_status(:ok)
         expect(response_object).to have_key 'data'
         expect(response_object['data'].count).to be_positive
-        expect(response_object['data'].count).to be <= User.count
+        expect(response_object['data'].count).to be 10
+      end
+
+      it 'should show second page' do
+        get :index, params: { page: { number: 2 } }
+
+        expect(response).to have_http_status(:ok)
+        expect(response_object).to have_key 'data'
+        expect(response_object['data'].count).to be_positive
+        expect(response_object['data'].count).to be 10
+
+        expected_link = "http://#{tenant.subdomain}.example.com/api/v1/users?page%5Bnumber%5D=2&page%5Bsize%5D=10"
+        expect(response_object['links']['self']).to eq expected_link
+      end
+
+      it 'should show 15 elements' do
+        get :index, params: { page: { size: 15 } }
+
+        expect(response).to have_http_status(:ok)
+        expect(response_object).to have_key 'data'
+        expect(response_object['data'].count).to be_positive
+        expect(response_object['data'].count).to be 15
       end
     end
 

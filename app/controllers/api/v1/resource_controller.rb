@@ -74,15 +74,15 @@ module Api
       end
 
       def page
-        params.permit(page: [:number, :size])
+        params.permit(page: [:number, :size]).fetch(:page, ActionController::Parameters.new)
       end
 
       def page_number
-        page.fetch(:page_number, 1)
+        page.fetch(:number, 1)
       end
 
       def page_size
-        page.fetch(:page_size, 10)
+        page.fetch(:size, 10)
       end
 
       def resource_id
