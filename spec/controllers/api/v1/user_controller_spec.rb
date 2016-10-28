@@ -37,6 +37,17 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     end
   end
 
+  describe '#delete' do
+    it 'should be able to delete itself' do
+      selected_user = [user, admin].sample
+      api_authorize_user selected_user
+      delete :destroy, params: { id: selected_user.id }
+
+      expect(response).to have_http_status(:no_content)
+      expect(User.where(id: selected_user.id)).to_not exist
+    end
+  end
+
   context 'as admin' do
     before do
       api_authorize_user admin
@@ -67,6 +78,15 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         patch :update, params: update_role_params(user.id)
         expect(response).to have_http_status(:ok)
         expect(user.reload.role).to eq 'admin'
+      end
+    end
+
+    describe '#delete' do
+      it 'should be able to delete another user' do
+        delete :destroy, params: { id: user.id }
+
+        expect(response).to have_http_status(:no_content)
+        expect(User.where(id: user.id)).to_not exist
       end
     end
 
@@ -109,6 +129,13 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         patch :update, params: update_role_params(user.id)
         expect(response).to have_http_status(:ok)
         expect(user.reload.role).to eq 'user'
+      end
+    end
+
+    describe '#delete' do
+      it 'should not be able to delete another user' do
+        delete :destroy, params: { id: admin.id }
+        expect_forbidden
       end
     end
   end

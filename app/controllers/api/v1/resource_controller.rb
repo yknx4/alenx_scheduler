@@ -9,6 +9,7 @@ module Api
       before_action :authenticate_user!
       before_action :run_authorization
       after_action :verify_authorized
+      skip_after_action :update_auth_header, if: :destroying_itself?
 
       def index
         render json: resource_collection.page(page_number).per(page_size)
@@ -85,7 +86,7 @@ module Api
       end
 
       def resource_id
-        params.permit(:id).fetch(:id)
+        params.permit(:id).fetch(:id).to_i
       end
 
       def resource_name
@@ -106,6 +107,10 @@ module Api
         render json: {
           errors: ['You cannot access this resource.']
         }, status: 403
+      end
+
+      def destroying_itself?
+        action_name == 'destroy' and resource_id == current_user.id
       end
     end
   end

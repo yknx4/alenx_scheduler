@@ -11,7 +11,7 @@ class UserPolicy < ApplicationPolicy
     user.admin? || own?
   end
 
-  def delete?
+  def destroy?
     user.admin? || own?
   end
 
